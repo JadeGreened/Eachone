@@ -1,10 +1,16 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
 import backgroundImg from '../assets/Home/Background.png';
-import backgroundVideo from '../assets/Home/BackGround.mp4';
+import backgroundVideo from '../assets/Home/clearerVersion/BackgroundLoop.mp4';
+import onSelectedVideo from '../assets/Home/clearerVersion/OnSelected.mp4';
+import standStillVideo from '../assets/Home/clearerVersion/StandStill.mp4';
+
+
+
+
 
 // Optimized animation variants with reduced complexity
 const fadeInUp = {
@@ -85,9 +91,8 @@ const publicationCardVariants = {
   }
 };
 
-const CharacterOverlay = () => {
+const CharacterOverlay = ({ setOpen }) => {
   const [hovered, setHovered] = useState(false);
-  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -95,10 +100,10 @@ const CharacterOverlay = () => {
       <motion.div
         className="absolute cursor-pointer"
         style={{
-          top: '65%',           // 根据实际人物位置微调
-          left: '45%',
-          width: '25%',
-          height: '60%',
+          top: '65%',           // 已经是百分比
+          left: '45%',          // 已经是百分比
+          width: '25%',         // 已经是百分比
+          height: '60%',        // 已经是百分比
           transform: 'translate(-50%, -50%)',
           borderRadius: '8px',
           zIndex: 3,
@@ -111,46 +116,100 @@ const CharacterOverlay = () => {
         animate={{ opacity: hovered ? 0.35 : 0 }}
         transition={{ duration: 0.25 }}
       />
-
-      {/* 信息弹窗 */}
-      {open && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black/60 z-50"
-          onClick={() => setOpen(false)}
-        >
-          <motion.div
-            className="bg-white rounded-lg p-6 max-w-md w-[90%]"
-            onClick={(e) => e.stopPropagation()}
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <h3 className="text-xl font-bold mb-2">人物介绍</h3>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              这里是对中间人物的简介文字。您可以在此补充研究方向、专业背景等信息。
-            </p>
-            <button
-              className="mt-4 px-4 py-2 bg-black text-white rounded"
-              onClick={() => setOpen(false)}
-            >
-              关闭
-            </button>
-          </motion.div>
-        </div>
-      )}
     </>
   );
 };
 
+// 新增侧边人物蒙层组件
+const SideCharacterOverlay = ({ onClick }) => {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      className="absolute cursor-pointer"
+      style={{
+        top: '65%',           // 已经是百分比
+        left: '15%',          // 已经是百分比
+        width: '20%',         // 已经是百分比
+        height: '60%',        // 已经是百分比
+        transform: 'translate(-50%, -50%)',
+        borderRadius: '8px',
+        zIndex: 3,
+        backgroundColor: '#000',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: hovered ? 0.35 : 0 }}
+      transition={{ duration: 0.25 }}
+    />
+  );
+};
+
 const HomeTailwind = () => {
+  // 使用一个状态表示当前页面：'background' 或 'character'
+  const [currentPage, setCurrentPage] = useState('background');
+  // 是否已经播放完onSelected视频
+  const [onSelectedFinished, setOnSelectedFinished] = useState(false);
+  // 是否是首次访问（用于控制引导提示和滚动限制）
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
   const [currentProject, setCurrentProject] = useState(0);
   const { scrollY } = useScroll();
+  
+  // 添加对onSelectedVideo的引用
+  const onSelectedVideoRef = useRef(null);
+  // 添加对页面主体的引用，用于控制滚动
+  const mainContentRef = useRef(null);
+  
+  // 禁用滚动功能
+  useEffect(() => {
+    const handleScroll = (e) => {
+      if (isFirstVisit) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.scrollTo(0, 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: false });
+    
+    if (isFirstVisit) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.body.style.overflow = '';
+    };
+  }, [isFirstVisit]);
   
   // Optimized scroll-based animations
   const heroY = useTransform(scrollY, [0, 500], [0, -100]);
   const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
   const springHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
+
+  // 切换到角色页面
+  const switchToCharacterPage = () => {
+    setCurrentPage('character');
+    setOnSelectedFinished(false); // 重置视频播放状态
+    setIsFirstVisit(false); // 用户已点击，不再是首次访问状态
+    
+    // 确保在下一个渲染周期重置视频
+    setTimeout(() => {
+      if (onSelectedVideoRef.current) {
+        onSelectedVideoRef.current.currentTime = 0; // 重置视频到开始位置
+        onSelectedVideoRef.current.play(); // 确保视频播放
+      }
+    }, 50);
+  };
+
+  // 切换回背景页面
+  const switchToBackgroundPage = () => {
+    setCurrentPage('background');
+  };
 
   // Memoized data to prevent unnecessary re-renders
   const projects = useMemo(() => [
@@ -252,12 +311,29 @@ const HomeTailwind = () => {
     setCurrentProject(index);
   }, []);
 
+  // 处理侧边人物点击事件
+  const handleSideCharacterClick = () => {
+    switchToBackgroundPage();
+  };
+
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center bg-transparent text-black relative"
-      style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif' }}
+      className="min-h-screen w-full flex flex-col items-center text-black relative"
+      style={{ 
+        backgroundColor: 'rgb(251, 249, 243)', 
+        fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif',
+        userSelect: 'text',
+        WebkitUserSelect: 'text', // 添加WebKit前缀
+        MozUserSelect: 'text', // 添加Mozilla前缀
+        msUserSelect: 'text', // 添加Microsoft前缀
+        pointerEvents: 'auto', // 确保指针事件正常工作
+        '--base-font-size': 'calc(0.8rem + 0.5vw)', // 基础字体大小变量
+      }}
     >
-      <Header />
+      <Header 
+        customMessage={isFirstVisit ? "Please Click The Guy In Middle" : null}
+        showNavItems={!isFirstVisit}
+      />
 
       {/* Hero Section */}
       <section
@@ -265,27 +341,179 @@ const HomeTailwind = () => {
         className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
       >
         {/* 视频背景 */}
-        <video
+        <motion.video
           src={backgroundVideo}
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 1 }}
+          className="absolute left-0 right-0 bottom-0 w-full object-cover"
+          style={{ top: '8%', height: '92%', zIndex: 1 }} // 使用百分比替代固定像素
+          animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
         />
-        {/* 半透明白色遮罩增强可读性 */}
-        <div className="absolute inset-0 bg-white/70" style={{ zIndex: 2 }} />
+         {/* onSelected 视频 */}
+         <motion.video
+            ref={onSelectedVideoRef}
+            src={onSelectedVideo}
+            autoPlay
+            muted
+            playsInline
+            onEnded={() => setOnSelectedFinished(true)}
+            className="absolute left-0 object-cover"
+            style={{ top: '8%', height: '92%', zIndex: 1, width: '30%', objectPosition: 'center 5%' }} // 使用百分比替代固定像素
+            initial={{ opacity: 0, x: '-100%' }}
+            animate={{ 
+              opacity: currentPage === 'character' && !onSelectedFinished ? 1 : 0, 
+              x: currentPage === 'character' ? '0%' : '-100%' 
+            }}
+            transition={{
+              x: { duration: 0.8, ease: 'easeInOut' },
+              opacity: { duration: 0 }
+            }}
+            key={`onselected-${currentPage === 'character'}`} // 添加key强制重新渲染
+          />
+        {/* StandStill 视频，预加载并根据状态切换 */}
+        <motion.video
+            src={standStillVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute left-0 object-cover"
+            style={{ top: '8%', height: '92%', zIndex: 1, width: '30%', objectPosition: 'center 5%' }} // 使用百分比替代固定像素
+            initial={{ opacity: 0, x: '0%' }}
+            animate={{ 
+              opacity: currentPage === 'character' && onSelectedFinished ? 1 : 0, 
+              x: currentPage === 'character' ? '0%' : '-100%' 
+            }}
+            transition={{ duration: 0 }}
+        />
+        {/* 半透明米黄色遮罩增强可读性 */}
+        <div className="absolute left-0 right-0 bottom-0" style={{ zIndex: 2, top: '8%', backgroundColor: 'rgba(251, 249, 243, 0.7)' }} />
         {/* 可交互人物蒙层 */}
-        <CharacterOverlay />
-        {/* 文字内容 */}
-        <div className="relative z-10 px-4 max-w-2xl">
-       
+        <div className="absolute top-0 left-0 right-0 bottom-0">
+          {/* 背景页面的蒙层，只在background页面显示 */}
+          {currentPage === 'background' && (
+            <CharacterOverlay setOpen={switchToCharacterPage} />
+          )}
+          {/* 角色页面的蒙层，只在character页面显示 */}
+          {currentPage === 'character' && (
+            <SideCharacterOverlay onClick={handleSideCharacterClick} />
+          )}
         </div>
+        
+        {/* 添加首次访问时的提示 */}
+        {isFirstVisit && (
+          <motion.div 
+            className="absolute text-center text-black"
+            style={{ 
+              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+              fontStyle: 'italic',
+              fontSize: '1.25rem',
+              fontWeight: '500',
+              letterSpacing: '0.5px',
+              bottom: '10%',
+              left: '0',
+              right: '0',
+            }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+          >
+            点击中间的人物继续
+          </motion.div>
+        )}
+        
+        {/* 文字内容 */}
+        
+        {!isFirstVisit && (
+          <motion.div 
+            className="absolute text-left"
+            style={{ 
+              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+              width: 'clamp(500px, 50%, 1200px)', // 使用clamp控制宽度范围，最小500px，最大1200px
+              userSelect: 'text', // 确保文本可以被选择
+              right: '10%', // 使用百分比定位，而不是固定像素
+              top: '20%', // 使用百分比定位，而不是固定像素
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.h1 
+              className="font-bold mb-8"
+              style={{ 
+                fontStyle: 'italic',
+                letterSpacing: '0.5px',
+                lineHeight: '1.1',
+                fontSize: 'clamp(2.5rem, 5vw, 6rem)', // 使用clamp确保字体大小在大屏幕上继续增加
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            >
+              Hi There! I'm<br />
+              Yichuan (Eachone)<br />
+              Zhang.
+            </motion.h1>
+            
+            <motion.div 
+              className="w-40 h-0.5 bg-black mb-10"
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 160 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+            ></motion.div>
+            
+            <motion.div 
+              className="space-y-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5, delay: 2 }}
+              style={{
+                fontSize: 'clamp(1rem, 1.3vw, 1.8rem)', // 减小字体大小范围
+                lineHeight: '1.2',
+                maxWidth: '100%', // 确保内容不会溢出父容器
+              }}
+            >
+              <p>
+                I am Yichuan Zhang, a senior majoring in Information and Computing Science 
+                at Xi'an Jiaotong-Liverpool University (XJTLU).
+              </p>
+              <p> 
+                Currently, I work as a Research Assistant at the X-CHI Lab under the guidance of 
+                Professor Hai-Ning Liang at HKUST-GZ.
+              </p>
+              <p>
+                My research interests lie in Human-Computer Interaction, Text Entry 
+                and VR development. My current work is focused on modeling user behavior patterns 
+                in virtual environment.
+              </p>
+            </motion.div>
+            
+            {/* 装饰性图标 - 使用相对定位 */}
+            <div className="absolute" style={{ top: '-5%', right: '5%', fontSize: '1.5rem', opacity: 0.5 }}>✦</div>
+            <div className="absolute" style={{ top: '5%', right: '-15%' }}>
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z" fill="currentColor" fillOpacity="0.7"/>
+                <ellipse cx="12" cy="12" rx="5" ry="5" fill="currentColor" fillOpacity="0.5" />
+              </svg>
+            </div>
+            <div className="absolute" style={{ bottom: '20%', right: '-10%', fontSize: '2rem', opacity: 0.5 }}>✧</div>
+            <div className="absolute" style={{ bottom: '-5%', right: '15%', fontSize: '1.8rem', opacity: 0.5 }}>✦</div>
+            <div className="absolute" style={{ bottom: '15%', right: '-20%' }}>
+              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.7 2.7C18.9 3.8 23.3 9.5 22.2 15.8C21.1 22 15.4 26.4 9.2 25.3C3 24.2 -1.4 18.5 -0.3 12.3C0.8 6 6.5 1.6 12.7 2.7Z" fill="currentColor" fillOpacity="0.1" />
+                <path d="M5 18L19 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M19 18V4H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </motion.div>
+        )}
+        
       </section>
 
       {/* 主内容区纯白背景 */}
-      <main className="relative z-10 w-full max-w-5xl mx-auto bg-white rounded-xl shadow-md p-8 -mt-16 border border-black">
+      <main ref={mainContentRef} className="relative z-10 w-full max-w-5xl mx-auto bg-white rounded-xl shadow-md p-8 border border-black" style={{ userSelect: 'text' }}>
         {/* Research Areas */}
         <section id="research" className="mb-16">
           <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">研究方向</h2>
