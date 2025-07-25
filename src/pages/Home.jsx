@@ -4,9 +4,9 @@ import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
 import backgroundImg from '../assets/Home/Background.png';
-import backgroundVideo from '../assets/Home/clearerVersion/BackgroundLoop.mp4';
-import onSelectedVideo from '../assets/Home/clearerVersion/OnSelected.mp4';
-import standStillVideo from '../assets/Home/clearerVersion/StandStill.mp4';
+import { R2_VIDEOS } from '../utils/r2Utils';
+import backgroundPoster from '../assets/Home/Background.png';
+import onSelectedPoster from '../assets/Home/Yichuan.png';
 
 
 
@@ -149,11 +149,11 @@ const SideCharacterOverlay = ({ onClick }) => {
 
 const HomeTailwind = () => {
   // 使用一个状态表示当前页面：'background' 或 'character'
-  const [currentPage, setCurrentPage] = useState('background');
+  const [currentPage, setCurrentPage] = useState('character');
   // 是否已经播放完onSelected视频
-  const [onSelectedFinished, setOnSelectedFinished] = useState(false);
+  const [onSelectedFinished, setOnSelectedFinished] = useState(false)
   // 是否是首次访问（用于控制引导提示和滚动限制）
-  const [isFirstVisit, setIsFirstVisit] = useState(true);
+  const [isFirstVisit] = useState(false);
   const [currentProject, setCurrentProject] = useState(0);
   const { scrollY } = useScroll();
   
@@ -162,41 +162,31 @@ const HomeTailwind = () => {
   // 添加对页面主体的引用，用于控制滚动
   const mainContentRef = useRef(null);
   
-  // 禁用滚动功能
-  useEffect(() => {
-    const handleScroll = (e) => {
-      if (isFirstVisit) {
-        e.preventDefault();
-        e.stopPropagation();
-        window.scrollTo(0, 0);
-      }
-    };
+  const [selectedReady, setSelectedReady] = useState(false);
+  const [stillReady, setStillReady] = useState(false);
 
-    window.addEventListener('scroll', handleScroll, { passive: false });
-    
-    if (isFirstVisit) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+  const posterVariants = {
+    loading: { opacity: 1 },
+    ready:   { opacity: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+  };
+  
+  const videoVariants = {
+    loading: { opacity: 0 },                 // ← 去掉 x
+    ready:   { opacity: 1, transition: { duration: 0.6, ease: 'easeOut' } }
+  };
+  
+  // 2. 根据 selectedReady 计算当前状态
+  const motionState = selectedReady ? 'ready' : 'loading';
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      document.body.style.overflow = '';
-    };
-  }, [isFirstVisit]);
   
   // Optimized scroll-based animations
   const heroY = useTransform(scrollY, [0, 500], [0, -100]);
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const springHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
 
+  const standStillRef = useRef(null);
   // 切换到角色页面
   const switchToCharacterPage = () => {
     setCurrentPage('character');
     setOnSelectedFinished(false); // 重置视频播放状态
-    setIsFirstVisit(false); // 用户已点击，不再是首次访问状态
-    
     // 确保在下一个渲染周期重置视频
     setTimeout(() => {
       if (onSelectedVideoRef.current) {
@@ -210,6 +200,14 @@ const HomeTailwind = () => {
   const switchToBackgroundPage = () => {
     setCurrentPage('background');
   };
+
+  useEffect(() => {
+    if (onSelectedFinished && standStillRef.current) {
+      // 让待机视频从头播
+      standStillRef.current.currentTime = 0;
+      standStillRef.current.play();
+    }
+  }, [onSelectedFinished]);
 
   // Memoized data to prevent unnecessary re-renders
   const projects = useMemo(() => [
@@ -330,10 +328,9 @@ const HomeTailwind = () => {
         '--base-font-size': 'calc(0.8rem + 0.5vw)', // 基础字体大小变量
       }}
     >
-      <Header 
-        customMessage={isFirstVisit ? "Please Click The Guy In Middle" : null}
-        showNavItems={!isFirstVisit}
-      />
+    <header className="sticky top-0 z-50 w-full backdrop-blur-sm bg-white/60 border-b border-black/10">
+        <Header />
+      </header>
 
       {/* Hero Section */}
       <section
@@ -342,65 +339,82 @@ const HomeTailwind = () => {
       >
         {/* 视频背景 */}
         <motion.video
-          src={backgroundVideo}
+          src={R2_VIDEOS.backgroundLoop}
           autoPlay
           loop
           muted
           playsInline
+          initial={{ opacity: currentPage === 'background' ? 1 : 0 }} 
+          animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
           className="absolute left-0 right-0 bottom-0 w-full object-cover"
           style={{ top: '8%', height: '92%', zIndex: 1 }} // 使用百分比替代固定像素
-          animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
           transition={{ duration: 0.5 }}
         />
          {/* onSelected 视频 */}
-         <motion.video
-            ref={onSelectedVideoRef}
-            src={onSelectedVideo}
-            autoPlay
-            muted
-            playsInline
-            onEnded={() => setOnSelectedFinished(true)}
-            className="absolute left-0 object-cover"
-            style={{ top: '8%', height: '92%', zIndex: 1, width: '30%', objectPosition: 'center 5%' }} // 使用百分比替代固定像素
-            initial={{ opacity: 0, x: '-100%' }}
-            animate={{ 
-              opacity: currentPage === 'character' && !onSelectedFinished ? 1 : 0, 
-              x: currentPage === 'character' ? '0%' : '-100%' 
-            }}
-            transition={{
-              x: { duration: 0.8, ease: 'easeInOut' },
-              opacity: { duration: 0 }
-            }}
-            key={`onselected-${currentPage === 'character'}`} // 添加key强制重新渲染
-          />
-        {/* StandStill 视频，预加载并根据状态切换 */}
-        <motion.video
-            src={standStillVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute left-0 object-cover"
-            style={{ top: '8%', height: '92%', zIndex: 1, width: '30%', objectPosition: 'center 5%' }} // 使用百分比替代固定像素
-            initial={{ opacity: 0, x: '0%' }}
-            animate={{ 
-              opacity: currentPage === 'character' && onSelectedFinished ? 1 : 0, 
-              x: currentPage === 'character' ? '0%' : '-100%' 
-            }}
-            transition={{ duration: 0 }}
+         <motion.img
+          src={onSelectedPoster}
+          className="absolute left-0 object-cover"
+          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
+          variants={posterVariants}
+          initial="loading"
+          animate={motionState}
+          transition={{ duration: 0 }} 
         />
+
+        <motion.video
+          ref={onSelectedVideoRef}
+          src={R2_VIDEOS.onSelected}
+          autoPlay muted playsInline preload="auto"
+          onCanPlayThrough={() => setSelectedReady(true)}
+          onEnded={() => setOnSelectedFinished(true)}
+          className="absolute left-0 object-cover"
+          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
+          variants={videoVariants}
+          initial="loading"
+          animate={currentPage==='character' && !onSelectedFinished ? motionState : 'loading'}
+          transition={{ duration: 0 }} 
+        />
+        {/* StandStill 视频，预加载并根据状态切换 */}
+        <motion.img
+          src={onSelectedPoster}
+          alt=""
+          className="absolute left-0 object-cover"
+          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
+          initial={{ opacity: 0 }}                     // 初始就隐藏
+          animate={{
+            opacity: onSelectedFinished
+              ? (stillReady ? 0 : 1)   // 只在片头播完后，根据 stillReady 控制显示/隐藏
+              : 0
+          }}
+          transition={{ duration: 0.3 }}
+        />
+
+      <motion.video
+        ref={standStillRef}
+        src={R2_VIDEOS.standStill}
+        loop
+        muted
+        playsInline
+        preload="auto"
+        onCanPlayThrough={() => setStillReady(true)}
+        className="absolute left-0 object-cover"
+        style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: currentPage === 'character' && onSelectedFinished && stillReady ? 1 : 0 }}
+        transition={{ duration: 0, ease: 'easeOut' }}
+      />
+
         {/* 半透明米黄色遮罩增强可读性 */}
         <div className="absolute left-0 right-0 bottom-0" style={{ zIndex: 2, top: '8%', backgroundColor: 'rgba(251, 249, 243, 0.7)' }} />
         {/* 可交互人物蒙层 */}
         <div className="absolute top-0 left-0 right-0 bottom-0">
-          {/* 背景页面的蒙层，只在background页面显示 */}
-          {currentPage === 'background' && (
-            <CharacterOverlay setOpen={switchToCharacterPage} />
-          )}
-          {/* 角色页面的蒙层，只在character页面显示 */}
-          {currentPage === 'character' && (
-            <SideCharacterOverlay onClick={handleSideCharacterClick} />
-          )}
+            {currentPage === 'character' && ( 
+              <SideCharacterOverlay onClick={handleSideCharacterClick} /> 
+            )} 
+            {/* 回到 background 后，点击中间再切回 character */} 
+            {currentPage === 'background' && ( 
+              <CharacterOverlay setOpen={switchToCharacterPage} /> 
+            )}
         </div>
         
         {/* 添加首次访问时的提示 */}
