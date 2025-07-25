@@ -9,9 +9,6 @@ import backgroundPoster from '../assets/Home/Background.png';
 import onSelectedPoster from '../assets/Home/Yichuan.png';
 
 
-
-
-
 // Optimized animation variants with reduced complexity
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
