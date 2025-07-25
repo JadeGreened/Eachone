@@ -9,9 +9,6 @@ import onSelectedVideo from '../assets/Home/clearerVersion/OnSelected.mp4';
 import standStillVideo from '../assets/Home/clearerVersion/StandStill.mp4';
 
 
-
-
-
 // Optimized animation variants with reduced complexity
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
