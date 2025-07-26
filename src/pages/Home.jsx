@@ -7,89 +7,17 @@ import backgroundImg from '../assets/Home/Background.png';
 import { getR2VideoPath, R2_VIDEOS } from '../utils/r2Utils';
 import backgroundPoster from '../assets/Home/Background.png';
 import onSelectedPoster from '../assets/Home/Yichuan.png';
+import { Canvas } from '@react-three/fiber';
+import ScrollClouds from "../components/ScrollClouds"
+import { CameraControls } from "@react-three/drei"
+import VolumetricClouds from '../components/VolumetricClouds'; // 路径根据你实际文件夹结构调整
+import { Clouds, Cloud } from "@react-three/drei"
+import { Leva } from "leva"
 
 
-// Optimized animation variants with reduced complexity
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.25, 0.46, 0.45, 0.94],
-    },
-  },
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-  hover: {
-    y: -8,
-    scale: 1.05,
-  },
-};
-
-const buttonVariants = {
-  hover: {
-    scale: 1.05,
-    boxShadow: '0 4px 24px 0 rgba(80, 120, 255, 0.18)',
-    transition: { duration: 0.05 },
-  },
-  tap: {
-    scale: 0.95,
-  },
-};
-
-// Floating animation for icons
-const floatingAnimation = {
-  animate: {
-    y: [0, -10, 0],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  },
-};
-
-const publicationCardVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  },
-  hover: {
-    x: 8,
-    scale: 1.01,
-  }
-};
 
 const CharacterOverlay = ({ setOpen }) => {
-  const [hovered, setHovered] = useState(false);
+  const [hovered, setHovered] = useState(false);  
 
   return (
     <>
@@ -145,6 +73,8 @@ const SideCharacterOverlay = ({ onClick }) => {
 };
 
 const HomeTailwind = () => {
+
+  const { scrollY } = useScroll();
   // 使用一个状态表示当前页面：'background' 或 'character'
   const [currentPage, setCurrentPage] = useState('character');
   // 是否已经播放完onSelected视频
@@ -152,12 +82,19 @@ const HomeTailwind = () => {
   // 是否是首次访问（用于控制引导提示和滚动限制）
   const [isFirstVisit] = useState(false);
   const [currentProject, setCurrentProject] = useState(0);
-  const { scrollY } = useScroll();
+
   
   // 添加对onSelectedVideo的引用
   const onSelectedVideoRef = useRef(null);
   // 添加对页面主体的引用，用于控制滚动
   const mainContentRef = useRef(null);
+  const standStillRef = useRef(null);
+
+  const bgColor = useTransform(
+    scrollY,
+    [0, 600],                 // 同你 heroOpacity 的区间
+    ["#eae7d9", "#ffffff"]    // 顶部米白 → 滚动后纯白
+  );
   
   const [selectedReady, setSelectedReady] = useState(false);
   const [stillReady, setStillReady] = useState(false);
@@ -177,9 +114,17 @@ const HomeTailwind = () => {
 
   
   // Optimized scroll-based animations
-  const heroY = useTransform(scrollY, [0, 500], [0, -100]);
+  /* 滚动位置 */
+ 
 
-  const standStillRef = useRef(null);
+  /* 1. 垂直位移：0px→0，500px→-120px */
+  const heroY = useTransform(scrollY, [0, 500], [0, -120]);
+
+  /* 2. 透明度：0px→1，600px→0   （区间不要和 heroY 的输出重复） */
+  const heroOpacity = useSpring(
+    useTransform(scrollY, [0, 600], [1, 0]),
+    { stiffness: 120, damping: 25 }
+  );
   // 切换到角色页面
   const switchToCharacterPage = () => {
     setCurrentPage('character');
@@ -314,8 +259,8 @@ const HomeTailwind = () => {
   return (
     <div
       className="min-h-screen w-full flex flex-col items-center text-black relative"
-      style={{ 
-        backgroundColor: 'rgb(251, 249, 243)', 
+      style={{
+        backgroundColor: bgColor,
         fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif',
         userSelect: 'text',
         WebkitUserSelect: 'text', // 添加WebKit前缀
@@ -330,10 +275,20 @@ const HomeTailwind = () => {
       </header>
 
       {/* Hero Section */}
-      <section
+      
+      <motion.section
         id="hero"
         className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
+        style={{ y: heroY, opacity: heroOpacity }} 
       >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundColor: 'rgba(234, 231, 217, 0.35)', // 深一点的米色 + 35% 透明
+            mixBlendMode: 'multiply',                      // 让颜色与视频相乘 → 更暗
+            zIndex: 2.5,                                   // 介于视频(1) 与旧米色罩(2) 之间
+          }}
+        />
         {/* 视频背景 */}
         <motion.video
           src={R2_VIDEOS.backgroundLoop}
@@ -414,26 +369,7 @@ const HomeTailwind = () => {
             )}
         </div>
         
-        {/* 添加首次访问时的提示 */}
-        {isFirstVisit && (
-          <motion.div 
-            className="absolute text-center text-black"
-            style={{ 
-              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
-              fontStyle: 'italic',
-              fontSize: '1.25rem',
-              fontWeight: '500',
-              letterSpacing: '0.5px',
-              bottom: '10%',
-              left: '0',
-              right: '0',
-            }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-          >
-            点击中间的人物继续
-          </motion.div>
-        )}
+      
         
         {/* 文字内容 */}
         
@@ -444,8 +380,8 @@ const HomeTailwind = () => {
               fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
               width: 'clamp(500px, 50%, 1200px)', // 使用clamp控制宽度范围，最小500px，最大1200px
               userSelect: 'text', // 确保文本可以被选择
-              right: '10%', // 使用百分比定位，而不是固定像素
-              top: '20%', // 使用百分比定位，而不是固定像素
+              right: '10%', 
+              top: '20%', 
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -521,14 +457,30 @@ const HomeTailwind = () => {
           </motion.div>
         )}
         
-      </section>
+        </motion.section>
 
-      {/* 主内容区纯白背景 */}
-      <main ref={mainContentRef} className="relative z-10 w-full max-w-5xl mx-auto bg-white rounded-xl shadow-md p-8 border border-black" style={{ userSelect: 'text' }}>
+
+           {/* ——— 云层横幅，用 vh 替代 px ——— */}
+           <section className="relative w-full h-[100vh] overflow-hidden">
+            <Canvas
+              className="w-full h-full bg-white"    // ← CSS 白底
+              camera={{ position: [0, -10, 25], fov: 75 }}
+              rotation={[Math.PI / 2, 0, 0]} 
+              dpr={[1, 1.5]}          // 桌面最高 1.5，移动端 1
+              powerPreference="low-power"
+              gl={{ alpha: true }}                   // ← 打开 alpha，画布部分透明，露出 CSS 背景
+            >
+              <ambientLight intensity={Math.PI / 1.5} />
+              <ScrollClouds />
+              {/* <CameraControls /> */}
+            </Canvas>
+          </section>
+      
+      <main ref={mainContentRef} className="relative z-10 w-full max-w-7xl mx-auto bg-white rounded-xl shadow-sm p-12 border border-gray-100" style={{ userSelect: 'text' }}>
         {/* Research Areas */}
         <section id="research" className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">研究方向</h2>
-          <div className="grid gap-6 mt-6 sm:grid-cols-2 md:grid-cols-2">
+          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">研究方向</h2>
+          <div className="grid gap-8 mt-6 sm:grid-cols-2 lg:grid-cols-3">
             {researchAreas.map((area, idx) => (
               <ResearchAreaCard key={idx} area={area} />
             ))}
@@ -537,8 +489,8 @@ const HomeTailwind = () => {
 
         {/* Projects */}
         <section id="projects" className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">项目</h2>
-          <div className="grid gap-6 mt-6 sm:grid-cols-1 md:grid-cols-2">
+          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">项目</h2>
+          <div className="grid gap-8 mt-6 sm:grid-cols-1 md:grid-cols-2">
             {projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
@@ -547,7 +499,7 @@ const HomeTailwind = () => {
 
         {/* Publications */}
         <section id="publications" className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">论文</h2>
+          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">论文</h2>
           <div className="grid gap-6 mt-6">
             {publications.map((pub, idx) => (
               <PublicationCard key={idx} pub={pub} />
@@ -708,7 +660,7 @@ const PlexusAnimation = () => {
 };
 
 const ProjectCard = ({ project }) => (
-  <div className="bg-white border border-black rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-2 transition-all duration-200" style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif', color: '#111' }}>
+  <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm" style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif', color: '#111' }}>
     <div className="flex items-center mb-2">
       <span className="text-2xl mr-2">{project.image}</span>
       <h3 className="font-bold text-lg">{project.title}</h3>
@@ -716,12 +668,12 @@ const ProjectCard = ({ project }) => (
     <p className="text-sm mb-2 text-gray-700">{project.description}</p>
     <div className="flex flex-wrap gap-2 mb-4">
       {project.technologies.map((tech, idx) => (
-        <span key={idx} className="px-2 py-1 border border-black rounded-full text-xs bg-white">{tech}</span>
+        <span key={idx} className="px-2 py-1 border border-gray-200 rounded-full text-xs bg-gray-100 text-gray-700">{tech}</span>
       ))}
     </div>
     <div className="flex gap-2 text-xs">
-      <a href={project.demo} target="_blank" rel="noopener noreferrer" className="px-3 py-1 border border-black rounded-full hover:bg-black hover:text-white">Demo</a>
-      <a href={project.paper} target="_blank" rel="noopener noreferrer" className="px-3 py-1 border border-black rounded-full hover:bg-black hover:text-white">Paper</a>
+      <a href={project.demo} target="_blank" rel="noopener noreferrer" className="px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 font-medium">Demo</a>
+      <a href={project.paper} target="_blank" rel="noopener noreferrer" className="px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 font-medium">Paper</a>
     </div>
   </div>
 );
