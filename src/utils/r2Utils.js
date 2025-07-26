@@ -8,6 +8,6 @@ export const R2_VIDEOS = {
 };
 
 
-export function getR2VideoPath(filename, folder = "portfolio") {
-    return `${R2_BASE_URL}/${folder}/${filename}`;
+export function getR2VideoPath(filename) {
+    return `${R2_BASE_URL}/${filename}`;
   }

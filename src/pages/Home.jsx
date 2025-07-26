@@ -4,7 +4,7 @@ import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
 import backgroundImg from '../assets/Home/Background.png';
-import { R2_VIDEOS } from '../utils/r2Utils';
+import { getR2VideoPath, R2_VIDEOS } from '../utils/r2Utils';
 import backgroundPoster from '../assets/Home/Background.png';
 import onSelectedPoster from '../assets/Home/Yichuan.png';
 
@@ -349,7 +349,7 @@ const HomeTailwind = () => {
         />
          {/* onSelected 视频 */}
          <motion.img
-          src={onSelectedPoster}
+          src={getR2VideoPath("Yichuan.png")}
           className="absolute left-0 object-cover"
           style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
           variants={posterVariants}
