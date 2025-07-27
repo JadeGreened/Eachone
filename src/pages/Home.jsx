@@ -10,7 +10,6 @@ import onSelectedPoster from '../assets/Home/Yichuan.png';
 import { Canvas } from '@react-three/fiber';
 import ScrollClouds from "../components/ScrollClouds"
 import { CameraControls } from "@react-three/drei"
-import VolumetricClouds from '../components/VolumetricClouds'; // 路径根据你实际文件夹结构调整
 import { Clouds, Cloud } from "@react-three/drei"
 import { Leva } from "leva"
 
@@ -82,7 +81,7 @@ const HomeTailwind = () => {
   // 是否是首次访问（用于控制引导提示和滚动限制）
   const [isFirstVisit] = useState(false);
   const [currentProject, setCurrentProject] = useState(0);
-
+  const [isReady, setIsReady] = useState(false);
   
   // 添加对onSelectedVideo的引用
   const onSelectedVideoRef = useRef(null);
@@ -115,7 +114,9 @@ const HomeTailwind = () => {
   
   // Optimized scroll-based animations
   /* 滚动位置 */
- 
+  const handleVideoReady = () => {
+    setIsReady(true);
+  };
 
   /* 1. 垂直位移：0px→0，500px→-120px */
   const heroY = useTransform(scrollY, [0, 500], [0, -120]);
@@ -277,97 +278,107 @@ const HomeTailwind = () => {
       {/* Hero Section */}
       
       <motion.section
-        id="hero"
-        className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
-        style={{ y: heroY, opacity: heroOpacity }} 
-      >
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundColor: 'rgba(234, 231, 217, 0.35)', // 深一点的米色 + 35% 透明
-            mixBlendMode: 'multiply',                      // 让颜色与视频相乘 → 更暗
-            zIndex: 2.5,                                   // 介于视频(1) 与旧米色罩(2) 之间
-          }}
-        />
-        {/* 视频背景 */}
-        <motion.video
-          src={R2_VIDEOS.backgroundLoop}
-          autoPlay
-          loop
-          muted
-          playsInline
-          initial={{ opacity: currentPage === 'background' ? 1 : 0 }} 
-          animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
-          className="absolute left-0 right-0 bottom-0 w-full object-cover"
-          style={{ top: '8%', height: '92%', zIndex: 1 }} // 使用百分比替代固定像素
-          transition={{ duration: 0.5 }}
-        />
-         {/* onSelected 视频 */}
-         <motion.img
-          src={getR2VideoPath("Yichuan.png")}
-          className="absolute left-0 object-cover"
-          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
-          variants={posterVariants}
-          initial="loading"
-          animate={motionState}
-          transition={{ duration: 0 }} 
-        />
-
-        <motion.video
-          ref={onSelectedVideoRef}
-          src={R2_VIDEOS.onSelected}
-          autoPlay muted playsInline preload="auto"
-          onCanPlayThrough={() => setSelectedReady(true)}
-          onEnded={() => setOnSelectedFinished(true)}
-          className="absolute left-0 object-cover"
-          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
-          variants={videoVariants}
-          initial="loading"
-          animate={currentPage==='character' && !onSelectedFinished ? motionState : 'loading'}
-          transition={{ duration: 0 }} 
-        />
-        {/* StandStill 视频，预加载并根据状态切换 */}
-        <motion.img
-          src={onSelectedPoster}
-          alt=""
-          className="absolute left-0 object-cover"
-          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
-          initial={{ opacity: 0 }}                     // 初始就隐藏
-          animate={{
-            opacity: onSelectedFinished
-              ? (stillReady ? 0 : 1)   // 只在片头播完后，根据 stillReady 控制显示/隐藏
-              : 0
-          }}
-          transition={{ duration: 0.3 }}
-        />
-
-      <motion.video
-        ref={standStillRef}
-        src={R2_VIDEOS.standStill}
-        loop
-        muted
-        playsInline
-        preload="auto"
-        onCanPlayThrough={() => setStillReady(true)}
-        className="absolute left-0 object-cover"
-        style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: currentPage === 'character' && onSelectedFinished && stillReady ? 1 : 0 }}
-        transition={{ duration: 0, ease: 'easeOut' }}
-      />
-
-        {/* 半透明米黄色遮罩增强可读性 */}
-        <div className="absolute left-0 right-0 bottom-0" style={{ zIndex: 2, top: '8%', backgroundColor: 'rgba(251, 249, 243, 0.7)' }} />
-        {/* 可交互人物蒙层 */}
-        <div className="absolute top-0 left-0 right-0 bottom-0">
-            {currentPage === 'character' && ( 
-              <SideCharacterOverlay onClick={handleSideCharacterClick} /> 
-            )} 
-            {/* 回到 background 后，点击中间再切回 character */} 
-            {currentPage === 'background' && ( 
-              <CharacterOverlay setOpen={switchToCharacterPage} /> 
+          id="hero"
+          className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
+          style={{ y: heroY, opacity: heroOpacity }} 
+        >
+          {/* 半透明遮罩 */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundColor: 'rgba(234, 231, 217, 0.35)',
+              mixBlendMode: 'multiply',
+              zIndex: 2.5,
+            }}
+          />
+          {/* 视频背景 */}
+          <motion.video
+            src={R2_VIDEOS.backgroundLoop}
+            autoPlay
+            loop
+            muted
+            playsInline
+            onCanPlayThrough={handleVideoReady}
+            initial={{ opacity: currentPage === 'background' ? 1 : 0 }} 
+            animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
+            className="absolute left-0 right-0 bottom-0 w-full object-cover"
+            style={{ top: '8%', height: '92%', zIndex: 1 }}
+            transition={{ duration: 0.5 }}
+          />
+          {/* onSelected 视频 */}
+          <motion.img
+            src={getR2VideoPath("Yichuan.png")}
+            className="absolute left-0 object-cover"
+            style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
+            variants={posterVariants}
+            initial="loading"
+            animate={motionState}
+            transition={{ duration: 0 }}
+          />
+          <motion.video
+            ref={onSelectedVideoRef}
+            src={R2_VIDEOS.onSelected}
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            onCanPlayThrough={() => setSelectedReady(true)}
+            onEnded={() => setOnSelectedFinished(true)}
+            className="absolute left-0 object-cover"
+            style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
+            variants={videoVariants}
+            initial="loading"
+            animate={currentPage === 'character' && !onSelectedFinished ? motionState : 'loading'}
+            transition={{ duration: 0 }}
+          />
+          {/* StandStill 视频 */}
+          <motion.img
+            src={onSelectedPoster}
+            alt=""
+            className="absolute left-0 object-cover"
+            style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: onSelectedFinished
+                ? (stillReady ? 0 : 1) 
+                : 0
+            }}
+            transition={{ duration: 0.3 }}
+          />
+          <motion.video
+            ref={standStillRef}
+            src={R2_VIDEOS.standStill}
+            loop
+            muted
+            playsInline
+            preload="auto"
+            onCanPlayThrough={() => setStillReady(true)}
+            className="absolute left-0 object-cover"
+            style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: currentPage === 'character' && onSelectedFinished && stillReady ? 1 : 0
+            }}
+            transition={{ duration: 0, ease: 'easeOut' }}
+          />
+          {/* 半透明米黄色遮罩 */}
+          <div
+            className="absolute left-0 right-0 bottom-0"
+            style={{
+              zIndex: 2,
+              top: '8%',
+              backgroundColor: 'rgba(251, 249, 243, 0.7)',
+            }}
+          />
+          {/* 可交互人物蒙层 */}
+          <div className="absolute top-0 left-0 right-0 bottom-0">
+            {currentPage === 'character' && (
+              <SideCharacterOverlay onClick={handleSideCharacterClick} />
             )}
-        </div>
+            {currentPage === 'background' && (
+              <CharacterOverlay setOpen={switchToCharacterPage} />
+            )}
+          </div>
         
       
         
@@ -481,7 +492,7 @@ const HomeTailwind = () => {
         <section id="research" className="mb-16">
           <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">研究方向</h2>
           <div className="grid gap-8 mt-6 sm:grid-cols-2 lg:grid-cols-3">
-            {researchAreas.map((area, idx) => (
+          {researchAreas.map((area, idx) => (
               <ResearchAreaCard key={idx} area={area} />
             ))}
           </div>

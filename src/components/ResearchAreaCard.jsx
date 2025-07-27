@@ -13,7 +13,7 @@ const ResearchAreaCardComponent = React.forwardRef(({ icon, title, description, 
     <div className="font-bold text-xl mb-1">{title}</div>
     <div className="text-base mb-2" style={{ color: '#444' }}>{description}</div>
     <div className="flex flex-wrap gap-2 mt-2">
-      {area.tags.map((tag, idx) => (
+      {tags.map((tag, idx) => (  // 使用tags
         <span key={idx} className="px-2 py-1 border border-gray-200 rounded-full text-xs bg-gray-100 text-gray-700">{tag}</span>
       ))}
     </div>
@@ -22,4 +22,4 @@ const ResearchAreaCardComponent = React.forwardRef(({ icon, title, description, 
 
 const ResearchAreaCard = motion(ResearchAreaCardComponent);
 
-export default ResearchAreaCard; 
+export default ResearchAreaCard;
