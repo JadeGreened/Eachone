@@ -15,84 +15,6 @@ import { Clouds, Cloud } from "@react-three/drei"
 import { Leva } from "leva"
 
 
-// Optimized animation variants with reduced complexity
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.25, 0.46, 0.45, 0.94],
-    },
-  },
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-  hover: {
-    y: -8,
-    scale: 1.05,
-  },
-};
-
-const buttonVariants = {
-  hover: {
-    scale: 1.05,
-    boxShadow: '0 4px 24px 0 rgba(80, 120, 255, 0.18)',
-    transition: { duration: 0.05 },
-  },
-  tap: {
-    scale: 0.95,
-  },
-};
-
-// Floating animation for icons
-const floatingAnimation = {
-  animate: {
-    y: [0, -10, 0],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  },
-};
-
-const publicationCardVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  },
-  hover: {
-    x: 8,
-    scale: 1.01,
-  }
-};
 
 const CharacterOverlay = ({ setOpen }) => {
   const [hovered, setHovered] = useState(false);  
@@ -537,21 +459,22 @@ const HomeTailwind = () => {
         
         </motion.section>
 
-        {/* ——— 云层横幅，用 vh 替代 px ——— */}
-        <section className="relative w-full h-[100vh] overflow-hidden">
-        <Canvas
-          className="w-full h-full bg-white"    // ← CSS 白底
-          camera={{ position: [0, -10, 25], fov: 75 }}
-          rotation={[Math.PI / 2, 0, 0]} 
-          dpr={[1, 1.5]}          // 桌面最高 1.5，移动端 1
-          powerPreference="low-power"
-          gl={{ alpha: true }}                   // ← 打开 alpha，画布部分透明，露出 CSS 背景
-        >
-          <ambientLight intensity={Math.PI / 1.5} />
-          <ScrollClouds />
-          {/* <CameraControls /> */}
-        </Canvas>
-      </section>
+
+           {/* ——— 云层横幅，用 vh 替代 px ——— */}
+           <section className="relative w-full h-[100vh] overflow-hidden">
+            <Canvas
+              className="w-full h-full bg-white"    // ← CSS 白底
+              camera={{ position: [0, -10, 25], fov: 75 }}
+              rotation={[Math.PI / 2, 0, 0]} 
+              dpr={[1, 1.5]}          // 桌面最高 1.5，移动端 1
+              powerPreference="low-power"
+              gl={{ alpha: true }}                   // ← 打开 alpha，画布部分透明，露出 CSS 背景
+            >
+              <ambientLight intensity={Math.PI / 1.5} />
+              <ScrollClouds />
+              {/* <CameraControls /> */}
+            </Canvas>
+          </section>
       
       <main ref={mainContentRef} className="relative z-10 w-full max-w-7xl mx-auto bg-white rounded-xl shadow-sm p-12 border border-gray-100" style={{ userSelect: 'text' }}>
         {/* Research Areas */}
