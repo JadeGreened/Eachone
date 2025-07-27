@@ -90,11 +90,11 @@ const HomeTailwind = () => {
   const mainContentRef = useRef(null);
   const standStillRef = useRef(null);
 
-  const bgColor = useTransform(
-    scrollY,
-    [0, 600],                 // 同你 heroOpacity 的区间
-    ["#eae7d9", "#ffffff"]    // 顶部米白 → 滚动后纯白
-  );
+  // const bgColor = useTransform(
+  //   scrollY,
+  //   [0, 600],                 // 同你 heroOpacity 的区间
+  //   ["#eae7d9", "#ffffff"]    // 顶部米白 → 滚动后纯白
+  // );
   
   const [selectedReady, setSelectedReady] = useState(false);
   const [stillReady, setStillReady] = useState(false);
@@ -120,13 +120,17 @@ const HomeTailwind = () => {
   };
 
   /* 1. 垂直位移：0px→0，500px→-120px */
-  const heroY = useTransform(scrollY, [0, 500], [0, -120]);
+  // const heroY = useTransform(scrollY, [0, 500], [0, -120]);
+  const heroY = 0;
 
   /* 2. 透明度：0px→1，600px→0   （区间不要和 heroY 的输出重复） */
   const heroOpacity = useSpring(
     useTransform(scrollY, [0, 600], [1, 0]),
     { stiffness: 120, damping: 25 }
   );
+  // const heroOpacity = 1;
+  const bgColor = "rgb(250, 249, 243)";
+
   // 切换到角色页面
   const switchToCharacterPage = () => {
     setCurrentPage('character');
@@ -493,7 +497,7 @@ const HomeTailwind = () => {
             </div>
             
             <Canvas
-                className="w-full h-full bg-white"
+                className="w-full h-full bg-[rgb(249,248,243)]"
                 camera={{ position: [0, 0, 25], fov: 75 }}  // 调整相机位置
                 rotation={[Math.PI / 4, 0, 0]}  // 调整视角角度
                 dpr={[1, 1.5]}  // 确认设备像素比是否过高
