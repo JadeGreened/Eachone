@@ -1,0 +1,42 @@
+/* 在CSS文件顶部添加 */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Playfair+Display:wght@600;700&family=Quicksand:wght@500;600&family=Poppins:wght@500;600&family=Comfortaa:wght@500;600&family=Cormorant+Garamond:wght@600;700&display=swap');
+/* 云层文字浮动动画 */
+.text-container {
+  transform: translateY(0);
+  animation: float 6s ease-in-out infinite;
+  text-shadow: 0 5px 15px rgba(0,0,0,0.2); /* 保持较强阴影效果，提高可读性 */
+}
+
+.text-container h2 {
+    font-family: 'Quicksand', 'Comfortaa', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+  }
+
+  
+.text-container:nth-child(1) h2 {
+  color: #FF7B9C; /* 亮粉红色 */
+}
+
+
+.text-container:nth-child(2) h2 {
+  color: #FFFFFF; /* 纯白色 */
+}
+
+.text-container:nth-child(3) h2 {
+  color: #4ECDC4; /* 亮蓝绿色 */
+}
+
+.text-container:nth-child(2) {
+  animation-delay: 2s;
+}
+
+.text-container:nth-child(3) {
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+} 

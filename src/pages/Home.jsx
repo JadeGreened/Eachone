@@ -12,6 +12,7 @@ import ScrollClouds from "../components/ScrollClouds"
 import { CameraControls } from "@react-three/drei"
 import { Clouds, Cloud } from "@react-three/drei"
 import { Leva } from "leva"
+import '../styles/cloud-text.css';
 
 
 
@@ -473,14 +474,33 @@ const HomeTailwind = () => {
 
            {/* ——— 云层横幅，用 vh 替代 px ——— */}
            <section className="relative w-full h-[100vh] overflow-hidden">
+            {/* 文字覆盖层 - 添加这部分 */}
+            <div className="absolute inset-0 z-10 flex items-center justify-around pointer-events-none">
+            <div className="text-container flex flex-col items-center">
+              <h2 className="text-5xl font-bold mb-4">VR & Game</h2>
+              <h2 className="text-4xl font-bold">Developer</h2>
+            </div>
+              
+              <div className="text-container flex flex-col items-center">
+                <h2 className="text-5xl font-bold text-[#D38B7D] mb-4">UI/UX & Full-Stack</h2>
+                <h2 className="text-4xl font-bold text-[#D38B7D]"> Developer</h2>
+              </div>
+              
+              <div className="text-container flex flex-col items-center">
+                <h2 className="text-5xl font-bold text-[#5D7A9E] mb-4">HCI & HAI</h2>
+                <h2 className="text-4xl font-bold text-[#5D7A9E]">Researcher</h2>
+              </div>
+            </div>
+            
             <Canvas
-              className="w-full h-full bg-white"    // ← CSS 白底
-              camera={{ position: [0, -10, 25], fov: 75 }}
-              rotation={[Math.PI / 2, 0, 0]} 
-              dpr={[1, 1.5]}          // 桌面最高 1.5，移动端 1
-              powerPreference="low-power"
-              gl={{ alpha: true }}                   // ← 打开 alpha，画布部分透明，露出 CSS 背景
-            >
+                className="w-full h-full bg-white"
+                camera={{ position: [0, 0, 25], fov: 75 }}  // 调整相机位置
+                rotation={[Math.PI / 4, 0, 0]}  // 调整视角角度
+                dpr={[1, 1.5]}  // 确认设备像素比是否过高
+                gl={{ alpha: true  }}  // 不使用透明背景
+              >
+
+
               <ambientLight intensity={Math.PI / 1.5} />
               <ScrollClouds />
               {/* <CameraControls /> */}
@@ -552,8 +572,8 @@ const fixedNodes = [
 ];
 
 const PlexusAnimation = () => {
-  const containerRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: null, y: null });
+const containerRef = useRef(null);
+const [mousePosition, setMousePosition] = useState({ x: null, y: null });
 
   const handleMouseMove = (event) => {
     if (containerRef.current) {
