@@ -3,8 +3,17 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
+import backgroundImg from '../assets/Home/Background.png';
+import { getR2VideoPath, R2_VIDEOS } from '../utils/r2Utils';
+import backgroundPoster from '../assets/Home/Background.png';
+import onSelectedPoster from '../assets/Home/Yichuan.png';
+import { Canvas } from '@react-three/fiber';
+import ScrollClouds from "../components/ScrollClouds"
+import { CameraControls } from "@react-three/drei"
+import VolumetricClouds from '../components/VolumetricClouds'; // 路径根据你实际文件夹结构调整
+import { Clouds, Cloud } from "@react-three/drei"
+import { Leva } from "leva"
 
-import { getR2Url } from '../utils/r2Config';
 
 // Optimized animation variants with reduced complexity
 const fadeInUp = {
@@ -86,7 +95,7 @@ const publicationCardVariants = {
 };
 
 const CharacterOverlay = ({ setOpen }) => {
-  const [hovered, setHovered] = useState(false);
+  const [hovered, setHovered] = useState(false);  
 
   return (
     <>
@@ -142,55 +151,62 @@ const SideCharacterOverlay = ({ onClick }) => {
 };
 
 const HomeTailwind = () => {
-  // 使用一个状态表示当前页面：'background' 或 'character'
-  const [currentPage, setCurrentPage] = useState('background');
-  // 是否已经播放完onSelected视频
-  const [onSelectedFinished, setOnSelectedFinished] = useState(false);
-  // 是否是首次访问（用于控制引导提示和滚动限制）
-  const [isFirstVisit, setIsFirstVisit] = useState(true);
-  const [currentProject, setCurrentProject] = useState(0);
+
   const { scrollY } = useScroll();
+  // 使用一个状态表示当前页面：'background' 或 'character'
+  const [currentPage, setCurrentPage] = useState('character');
+  // 是否已经播放完onSelected视频
+  const [onSelectedFinished, setOnSelectedFinished] = useState(false)
+  // 是否是首次访问（用于控制引导提示和滚动限制）
+  const [isFirstVisit] = useState(false);
+  const [currentProject, setCurrentProject] = useState(0);
+
   
   // 添加对onSelectedVideo的引用
   const onSelectedVideoRef = useRef(null);
   // 添加对页面主体的引用，用于控制滚动
   const mainContentRef = useRef(null);
+  const standStillRef = useRef(null);
+
+  const bgColor = useTransform(
+    scrollY,
+    [0, 600],                 // 同你 heroOpacity 的区间
+    ["#eae7d9", "#ffffff"]    // 顶部米白 → 滚动后纯白
+  );
   
-  // 禁用滚动功能
-  useEffect(() => {
-    const handleScroll = (e) => {
-      if (isFirstVisit) {
-        e.preventDefault();
-        e.stopPropagation();
-        window.scrollTo(0, 0);
-      }
-    };
+  const [selectedReady, setSelectedReady] = useState(false);
+  const [stillReady, setStillReady] = useState(false);
 
-    window.addEventListener('scroll', handleScroll, { passive: false });
-    
-    if (isFirstVisit) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+  const posterVariants = {
+    loading: { opacity: 1 },
+    ready:   { opacity: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+  };
+  
+  const videoVariants = {
+    loading: { opacity: 0 },                 // ← 去掉 x
+    ready:   { opacity: 1, transition: { duration: 0.6, ease: 'easeOut' } }
+  };
+  
+  // 2. 根据 selectedReady 计算当前状态
+  const motionState = selectedReady ? 'ready' : 'loading';
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      document.body.style.overflow = '';
-    };
-  }, [isFirstVisit]);
   
   // Optimized scroll-based animations
-  const heroY = useTransform(scrollY, [0, 500], [0, -100]);
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const springHeroY = useSpring(heroY, { stiffness: 100, damping: 30 });
+  /* 滚动位置 */
+ 
 
+  /* 1. 垂直位移：0px→0，500px→-120px */
+  const heroY = useTransform(scrollY, [0, 500], [0, -120]);
+
+  /* 2. 透明度：0px→1，600px→0   （区间不要和 heroY 的输出重复） */
+  const heroOpacity = useSpring(
+    useTransform(scrollY, [0, 600], [1, 0]),
+    { stiffness: 120, damping: 25 }
+  );
   // 切换到角色页面
   const switchToCharacterPage = () => {
     setCurrentPage('character');
     setOnSelectedFinished(false); // 重置视频播放状态
-    setIsFirstVisit(false); // 用户已点击，不再是首次访问状态
-    
     // 确保在下一个渲染周期重置视频
     setTimeout(() => {
       if (onSelectedVideoRef.current) {
@@ -204,6 +220,14 @@ const HomeTailwind = () => {
   const switchToBackgroundPage = () => {
     setCurrentPage('background');
   };
+
+  useEffect(() => {
+    if (onSelectedFinished && standStillRef.current) {
+      // 让待机视频从头播
+      standStillRef.current.currentTime = 0;
+      standStillRef.current.play();
+    }
+  }, [onSelectedFinished]);
 
   // Memoized data to prevent unnecessary re-renders
   const projects = useMemo(() => [
@@ -313,8 +337,8 @@ const HomeTailwind = () => {
   return (
     <div
       className="min-h-screen w-full flex flex-col items-center text-black relative"
-      style={{ 
-        backgroundColor: 'rgb(251, 249, 243)', 
+      style={{
+        backgroundColor: bgColor,
         fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif',
         userSelect: 'text',
         WebkitUserSelect: 'text', // 添加WebKit前缀
@@ -324,99 +348,106 @@ const HomeTailwind = () => {
         '--base-font-size': 'calc(0.8rem + 0.5vw)', // 基础字体大小变量
       }}
     >
-      <Header 
-        customMessage={isFirstVisit ? "Please Click The Guy In Middle" : null}
-        showNavItems={!isFirstVisit}
-      />
+    <header className="sticky top-0 z-50 w-full backdrop-blur-sm bg-white/60 border-b border-black/10">
+        <Header />
+      </header>
 
       {/* Hero Section */}
-      <section
+      
+      <motion.section
         id="hero"
         className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
+        style={{ y: heroY, opacity: heroOpacity }} 
       >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundColor: 'rgba(234, 231, 217, 0.35)', // 深一点的米色 + 35% 透明
+            mixBlendMode: 'multiply',                      // 让颜色与视频相乘 → 更暗
+            zIndex: 2.5,                                   // 介于视频(1) 与旧米色罩(2) 之间
+          }}
+        />
         {/* 视频背景 */}
         <motion.video
-          src={getR2Url('backgroundVideo')}
+          src={R2_VIDEOS.backgroundLoop}
           autoPlay
           loop
           muted
           playsInline
+          initial={{ opacity: currentPage === 'background' ? 1 : 0 }} 
+          animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
           className="absolute left-0 right-0 bottom-0 w-full object-cover"
           style={{ top: '8%', height: '92%', zIndex: 1 }} // 使用百分比替代固定像素
-          animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
           transition={{ duration: 0.5 }}
         />
          {/* onSelected 视频 */}
-         <motion.video
-            ref={onSelectedVideoRef}
-            src={getR2Url('onSelectedVideo')}
-            autoPlay
-            muted
-            playsInline
-            onEnded={() => setOnSelectedFinished(true)}
-            className="absolute left-0 object-cover"
-            style={{ top: '8%', height: '92%', zIndex: 1, width: '30%', objectPosition: 'center 5%' }} // 使用百分比替代固定像素
-            initial={{ opacity: 0, x: '-100%' }}
-            animate={{ 
-              opacity: currentPage === 'character' && !onSelectedFinished ? 1 : 0, 
-              x: currentPage === 'character' ? '0%' : '-100%' 
-            }}
-            transition={{
-              x: { duration: 0.8, ease: 'easeInOut' },
-              opacity: { duration: 0 }
-            }}
-            key={`onselected-${currentPage === 'character'}`} // 添加key强制重新渲染
-          />
-        {/* StandStill 视频，预加载并根据状态切换 */}
-        <motion.video
-            src={getR2Url('standStillVideo')}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute left-0 object-cover"
-            style={{ top: '8%', height: '92%', zIndex: 1, width: '30%', objectPosition: 'center 5%' }} // 使用百分比替代固定像素
-            initial={{ opacity: 0, x: '0%' }}
-            animate={{ 
-              opacity: currentPage === 'character' && onSelectedFinished ? 1 : 0, 
-              x: currentPage === 'character' ? '0%' : '-100%' 
-            }}
-            transition={{ duration: 0 }}
+         <motion.img
+          src={getR2VideoPath("Yichuan.png")}
+          className="absolute left-0 object-cover"
+          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
+          variants={posterVariants}
+          initial="loading"
+          animate={motionState}
+          transition={{ duration: 0 }} 
         />
+
+        <motion.video
+          ref={onSelectedVideoRef}
+          src={R2_VIDEOS.onSelected}
+          autoPlay muted playsInline preload="auto"
+          onCanPlayThrough={() => setSelectedReady(true)}
+          onEnded={() => setOnSelectedFinished(true)}
+          className="absolute left-0 object-cover"
+          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
+          variants={videoVariants}
+          initial="loading"
+          animate={currentPage==='character' && !onSelectedFinished ? motionState : 'loading'}
+          transition={{ duration: 0 }} 
+        />
+        {/* StandStill 视频，预加载并根据状态切换 */}
+        <motion.img
+          src={onSelectedPoster}
+          alt=""
+          className="absolute left-0 object-cover"
+          style={{ top:'8%', height:'92%', width:'30%', objectPosition:'center 5%', zIndex:1 }}
+          initial={{ opacity: 0 }}                     // 初始就隐藏
+          animate={{
+            opacity: onSelectedFinished
+              ? (stillReady ? 0 : 1)   // 只在片头播完后，根据 stillReady 控制显示/隐藏
+              : 0
+          }}
+          transition={{ duration: 0.3 }}
+        />
+
+      <motion.video
+        ref={standStillRef}
+        src={R2_VIDEOS.standStill}
+        loop
+        muted
+        playsInline
+        preload="auto"
+        onCanPlayThrough={() => setStillReady(true)}
+        className="absolute left-0 object-cover"
+        style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: currentPage === 'character' && onSelectedFinished && stillReady ? 1 : 0 }}
+        transition={{ duration: 0, ease: 'easeOut' }}
+      />
+
         {/* 半透明米黄色遮罩增强可读性 */}
         <div className="absolute left-0 right-0 bottom-0" style={{ zIndex: 2, top: '8%', backgroundColor: 'rgba(251, 249, 243, 0.7)' }} />
         {/* 可交互人物蒙层 */}
         <div className="absolute top-0 left-0 right-0 bottom-0">
-          {/* 背景页面的蒙层，只在background页面显示 */}
-          {currentPage === 'background' && (
-            <CharacterOverlay setOpen={switchToCharacterPage} />
-          )}
-          {/* 角色页面的蒙层，只在character页面显示 */}
-          {currentPage === 'character' && (
-            <SideCharacterOverlay onClick={handleSideCharacterClick} />
-          )}
+            {currentPage === 'character' && ( 
+              <SideCharacterOverlay onClick={handleSideCharacterClick} /> 
+            )} 
+            {/* 回到 background 后，点击中间再切回 character */} 
+            {currentPage === 'background' && ( 
+              <CharacterOverlay setOpen={switchToCharacterPage} /> 
+            )}
         </div>
         
-        {/* 添加首次访问时的提示 */}
-        {isFirstVisit && (
-          <motion.div 
-            className="absolute text-center text-black"
-            style={{ 
-              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
-              fontStyle: 'italic',
-              fontSize: '1.25rem',
-              fontWeight: '500',
-              letterSpacing: '0.5px',
-              bottom: '10%',
-              left: '0',
-              right: '0',
-            }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-          >
-            点击中间的人物继续
-          </motion.div>
-        )}
+      
         
         {/* 文字内容 */}
         
@@ -427,8 +458,8 @@ const HomeTailwind = () => {
               fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
               width: 'clamp(500px, 50%, 1200px)', // 使用clamp控制宽度范围，最小500px，最大1200px
               userSelect: 'text', // 确保文本可以被选择
-              right: '10%', // 使用百分比定位，而不是固定像素
-              top: '20%', // 使用百分比定位，而不是固定像素
+              right: '10%', 
+              top: '20%', 
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -504,14 +535,29 @@ const HomeTailwind = () => {
           </motion.div>
         )}
         
-      </section>
+        </motion.section>
 
-      {/* 主内容区纯白背景 */}
-      <main ref={mainContentRef} className="relative z-10 w-full max-w-5xl mx-auto bg-white rounded-xl shadow-md p-8 border border-black" style={{ userSelect: 'text' }}>
+        {/* ——— 云层横幅，用 vh 替代 px ——— */}
+        <section className="relative w-full h-[100vh] overflow-hidden">
+        <Canvas
+          className="w-full h-full bg-white"    // ← CSS 白底
+          camera={{ position: [0, -10, 25], fov: 75 }}
+          rotation={[Math.PI / 2, 0, 0]} 
+          dpr={[1, 1.5]}          // 桌面最高 1.5，移动端 1
+          powerPreference="low-power"
+          gl={{ alpha: true }}                   // ← 打开 alpha，画布部分透明，露出 CSS 背景
+        >
+          <ambientLight intensity={Math.PI / 1.5} />
+          <ScrollClouds />
+          {/* <CameraControls /> */}
+        </Canvas>
+      </section>
+      
+      <main ref={mainContentRef} className="relative z-10 w-full max-w-7xl mx-auto bg-white rounded-xl shadow-sm p-12 border border-gray-100" style={{ userSelect: 'text' }}>
         {/* Research Areas */}
         <section id="research" className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">研究方向</h2>
-          <div className="grid gap-6 mt-6 sm:grid-cols-2 md:grid-cols-2">
+          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">研究方向</h2>
+          <div className="grid gap-8 mt-6 sm:grid-cols-2 lg:grid-cols-3">
             {researchAreas.map((area, idx) => (
               <ResearchAreaCard key={idx} area={area} />
             ))}
@@ -520,8 +566,8 @@ const HomeTailwind = () => {
 
         {/* Projects */}
         <section id="projects" className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">项目</h2>
-          <div className="grid gap-6 mt-6 sm:grid-cols-1 md:grid-cols-2">
+          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">项目</h2>
+          <div className="grid gap-8 mt-6 sm:grid-cols-1 md:grid-cols-2">
             {projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
@@ -530,7 +576,7 @@ const HomeTailwind = () => {
 
         {/* Publications */}
         <section id="publications" className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">论文</h2>
+          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">论文</h2>
           <div className="grid gap-6 mt-6">
             {publications.map((pub, idx) => (
               <PublicationCard key={idx} pub={pub} />
@@ -691,7 +737,7 @@ const PlexusAnimation = () => {
 };
 
 const ProjectCard = ({ project }) => (
-  <div className="bg-white border border-black rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-2 transition-all duration-200" style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif', color: '#111' }}>
+  <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm" style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif', color: '#111' }}>
     <div className="flex items-center mb-2">
       <span className="text-2xl mr-2">{project.image}</span>
       <h3 className="font-bold text-lg">{project.title}</h3>
@@ -699,12 +745,12 @@ const ProjectCard = ({ project }) => (
     <p className="text-sm mb-2 text-gray-700">{project.description}</p>
     <div className="flex flex-wrap gap-2 mb-4">
       {project.technologies.map((tech, idx) => (
-        <span key={idx} className="px-2 py-1 border border-black rounded-full text-xs bg-white">{tech}</span>
+        <span key={idx} className="px-2 py-1 border border-gray-200 rounded-full text-xs bg-gray-100 text-gray-700">{tech}</span>
       ))}
     </div>
     <div className="flex gap-2 text-xs">
-      <a href={project.demo} target="_blank" rel="noopener noreferrer" className="px-3 py-1 border border-black rounded-full hover:bg-black hover:text-white">Demo</a>
-      <a href={project.paper} target="_blank" rel="noopener noreferrer" className="px-3 py-1 border border-black rounded-full hover:bg-black hover:text-white">Paper</a>
+      <a href={project.demo} target="_blank" rel="noopener noreferrer" className="px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 font-medium">Demo</a>
+      <a href={project.paper} target="_blank" rel="noopener noreferrer" className="px-4 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 font-medium">Paper</a>
     </div>
   </div>
 );

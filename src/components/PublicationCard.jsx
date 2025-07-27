@@ -15,7 +15,7 @@ const buttonVariants = {
 const PublicationCardComponent = React.forwardRef(({ title, authors, journal, year, doi, conference, description, link, className, ...props }, ref) => (
   <div
     ref={ref}
-    className={`bg-white border border-black rounded-xl p-6 shadow-sm transition-all duration-200 hover:shadow-lg hover:border-2 hover:border-black ${className}`}
+    className={`bg-white border border-gray-200 rounded-xl p-6 shadow-sm ${className}`}
     style={{ color: '#111', fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif' }}
     {...props}
   >
