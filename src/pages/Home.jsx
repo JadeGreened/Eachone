@@ -3,11 +3,8 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
-import backgroundImg from '../assets/Home/Background.png';
-import backgroundVideo from '../assets/Home/clearerVersion/BackgroundLoop.mp4';
-import onSelectedVideo from '../assets/Home/clearerVersion/OnSelected.mp4';
-import standStillVideo from '../assets/Home/clearerVersion/StandStill.mp4';
 
+import { getR2Url } from '../utils/r2Config';
 
 // Optimized animation variants with reduced complexity
 const fadeInUp = {
@@ -339,7 +336,7 @@ const HomeTailwind = () => {
       >
         {/* 视频背景 */}
         <motion.video
-          src={backgroundVideo}
+          src={getR2Url('backgroundVideo')}
           autoPlay
           loop
           muted
@@ -352,7 +349,7 @@ const HomeTailwind = () => {
          {/* onSelected 视频 */}
          <motion.video
             ref={onSelectedVideoRef}
-            src={onSelectedVideo}
+            src={getR2Url('onSelectedVideo')}
             autoPlay
             muted
             playsInline
@@ -372,7 +369,7 @@ const HomeTailwind = () => {
           />
         {/* StandStill 视频，预加载并根据状态切换 */}
         <motion.video
-            src={standStillVideo}
+            src={getR2Url('standStillVideo')}
             autoPlay
             loop
             muted
