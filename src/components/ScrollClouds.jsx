@@ -114,24 +114,24 @@ export default function ScrollClouds() {
   return (
     <group ref={group} position={[0, -3.5, 0]}>
       {/* 主云，体积适当放大一倍 灰色 */}
-      <Cloud ref={cloud0} {...config} bounds={[x * 2, y * 2, z * 2]} color={color} position={[10, 3, 0]} seed={1} />
-
+      <Cloud ref={cloud0} {...config} bounds={[x * 2, y * 2, z * 2]} color={color} seed={1} />
       {/* 装饰云：每朵云都有不同的大小 */}
+      {/* 白云右边的粉云 */}
+     {/* 装饰云：每朵云都有不同的大小 */}
       {/* 白云右边的粉云 */}
       <Cloud ref={cloud1} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#eed0d0" seed={2} position={[18, -6, 0]} />
       {/* 白云左边的绿云 */}
       <Cloud ref={cloud2} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#eed0d0" seed={3} position={[-20, -8, 0]} />
       {/* 白云中间的蓝云 */}
-      <Cloud ref={cloud3} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#eed0d0" seed={2} position={[-7, -18, -15]} />
+      <Cloud ref={cloud3} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#eed0d0" seed={2} position={[-7, -18, -1]} />
       {/* 屏幕前面的蓝云 */}
-      <Cloud ref={cloud4} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#c0f0f0" seed={5} position={[7, -6, 10]} />
+      <Cloud ref={cloud4} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#c0f0f0" seed={5} position={[10, -6, 10]} />
       {/* 屏幕左边的粉云 */}
       <Cloud ref={cloud5} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#eed0d0" seed={6} position={[-25, -10, 5]} />
       {/* 屏幕右边的绿云 */}
       <Cloud ref={cloud6} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#c0f0f0" seed={7} position={[30, -6, 0]} />
       {/* 屏幕左中间的紫云 */}
-      <Cloud ref={cloud7} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#eed0d0" seed={8} position={[-25, -8, 0]} /> 
-      
+      <Cloud ref={cloud7} {...config} bounds={[x * 0.6, y * 0.6, z * 0.6]} color="#eed0d0" seed={8} position={[-25, -8, -10]} /> 
       {/* 外圈大云，整体缩小 + 向下移一点  粉色,在主云下面*/}
       <Cloud
         concentrate="outside"

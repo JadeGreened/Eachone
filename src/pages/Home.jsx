@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
+import HCISection from '../components/HCISection';
 import backgroundImg from '../assets/Home/Background.png';
 import { getR2VideoPath, R2_VIDEOS } from '../utils/r2Utils';
 import backgroundPoster from '../assets/Home/Background.png';
@@ -157,100 +158,8 @@ const HomeTailwind = () => {
     }
   }, [onSelectedFinished]);
 
-  // Memoized data to prevent unnecessary re-renders
-  const projects = useMemo(() => [
-    {
-      id: 1,
-      title: "VR Interactive Learning Environment",
-      category: "VR/AR",
-      description: "A virtual reality learning platform developed with Unity, exploring immersive educational experiences. Features gesture recognition, spatial audio, and real-time collaboration.",
-      technologies: ["Unity", "C#", "Oculus SDK", "SteamVR"],
-      image: "🎮",
-      demo: "https://example.com/vr-learning",
-      paper: "https://example.com/paper1"
-    },
-    {
-      id: 2,
-      title: "AI Agent Intelligent Assistant",
-      category: "AI/HCI",
-      description: "An intelligent interaction agent based on natural language processing, supporting multimodal input and contextual understanding. Applied in smart homes and assistive technology.",
-      technologies: ["Python", "TensorFlow", "NLP", "ROS"],
-      image: "🤖",
-      demo: "https://example.com/ai-agent",
-      paper: "https://example.com/paper2"
-    },
-    {
-      id: 3,
-      title: "Augmented Reality Gesture Control",
-      category: "AR/HCI",
-      description: "Computer vision-based gesture recognition system for touchless AR interface control. Supports multiple gesture patterns and real-time feedback.",
-      technologies: ["OpenCV", "MediaPipe", "Unity", "ARKit"],
-      image: "👋",
-      demo: "https://example.com/ar-gesture",
-      paper: "https://example.com/paper3"
-    },
-    {
-      id: 4,
-      title: "Brain-Computer Interface Design",
-      category: "HCI/Neuroscience",
-      description: "Exploring EEG signals in HCI applications, designing intuitive brain-computer interaction interfaces. Combines machine learning algorithms for intent recognition.",
-      technologies: ["EEG", "Python", "ML", "BCI"],
-      image: "🧠",
-      demo: "https://example.com/bci-interface",
-      paper: "https://example.com/paper4"
-    }
-  ], []);
 
-  const publications = useMemo(() => [
-    {
-      title: "Immersive Learning in Virtual Reality: A Study on Educational Effectiveness",
-      authors: "Zhang, Y., et al.",
-      journal: "CHI 2024",
-      year: "2024",
-      doi: "10.1145/example"
-    },
-    {
-      title: "AI-Powered Human-Computer Interaction: Challenges and Opportunities",
-      authors: "Zhang, Y., et al.",
-      journal: "UIST 2023",
-      year: "2023",
-      doi: "10.1145/example"
-    },
-    {
-      title: "Gesture-Based AR Interaction: A Comparative Study",
-      authors: "Zhang, Y., et al.",
-      journal: "VRST 2023",
-      year: "2023",
-      doi: "10.1145/example"
-    }
-  ], []);
 
-  const researchAreas = useMemo(() => [
-    {
-      icon: "🎮",
-      title: "Virtual Reality (VR)",
-      description: "Immersive interaction design, spatial audio, gesture recognition, collaborative VR environments",
-      tags: ["Unity", "Oculus", "SteamVR"]
-    },
-    {
-      icon: "👁️",
-      title: "Augmented Reality (AR)",
-      description: "AR interface design, computer vision, gesture control, spatial computing",
-      tags: ["ARKit", "ARCore", "OpenCV"]
-    },
-    {
-      icon: "🤖",
-      title: "AI Agent",
-      description: "Intelligent interaction agents, natural language processing, multimodal interaction, machine learning",
-      tags: ["NLP", "TensorFlow", "ROS"]
-    },
-    {
-      icon: "🧠",
-      title: "Brain-Computer Interface",
-      description: "EEG signal processing, intent recognition, neural feedback, BCI applications",
-      tags: ["EEG", "BCI", "ML"]
-    }
-  ], []);
 
   // Optimized project change handler
   const handleProjectChange = useCallback((index) => {
@@ -474,84 +383,48 @@ const HomeTailwind = () => {
         )}
         
         </motion.section>
+       
+       {/* HCI/AI Section */}
+       <section className="relative w-full h-[100vh] overflow-hidden">
+        <HCISection />
+        </section>
 
 
-           {/* ——— 云层横幅，用 vh 替代 px ——— */}
-           <section className="relative w-full h-[100vh] overflow-hidden">
-            {/* 文字覆盖层 - 添加这部分 */}
-            <div className="absolute inset-0 z-10 flex items-center justify-around pointer-events-none">
-            <div className="text-container flex flex-col items-center">
-              <h2 className="text-5xl font-bold mb-4">VR & Game</h2>
-              <h2 className="text-4xl font-bold">Developer</h2>
-            </div>
-              
-              <div className="text-container flex flex-col items-center">
-                <h2 className="text-5xl font-bold text-[#D38B7D] mb-4">UI/UX & Full-Stack</h2>
-                <h2 className="text-4xl font-bold text-[#D38B7D]"> Developer</h2>
-              </div>
-              
-              <div className="text-container flex flex-col items-center">
-                <h2 className="text-5xl font-bold text-[#5D7A9E] mb-4">HCI & HAI</h2>
-                <h2 className="text-4xl font-bold text-[#5D7A9E]">Researcher</h2>
-              </div>
-            </div>
-            
-            <Canvas
-                className="w-full h-full bg-[rgb(249,248,243)]"
-                camera={{ position: [0, 0, 25], fov: 75 }}  // 调整相机位置
-                rotation={[Math.PI / 4, 0, 0]}  // 调整视角角度
-                dpr={[1, 1.5]}  // 确认设备像素比是否过高
-                gl={{ alpha: true  }}  // 不使用透明背景
-              >
-
-
-              <ambientLight intensity={Math.PI / 1.5} />
-              <ScrollClouds />
-              {/* <CameraControls /> */}
-            </Canvas>
-          </section>
-      
-      <main ref={mainContentRef} className="relative z-10 w-full max-w-7xl mx-auto bg-white rounded-xl shadow-sm p-12 border border-gray-100" style={{ userSelect: 'text' }}>
-        {/* Research Areas */}
-        <section id="research" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">研究方向</h2>
-          <div className="grid gap-8 mt-6 sm:grid-cols-2 lg:grid-cols-3">
-          {researchAreas.map((area, idx) => (
-              <ResearchAreaCard key={idx} area={area} />
-            ))}
+        {/* ——— 云层横幅，用 vh 替代 px ——— */}
+        <section className="relative w-full h-[100vh] overflow-hidden">
+        {/* 文字覆盖层 - 添加这部分 */}
+        <div className="absolute inset-0 z-10 flex items-center justify-around pointer-events-none">
+        <div className="text-container flex flex-col items-center">
+          <h2 className="text-5xl font-bold mb-4">VR & Game</h2>
+          <h2 className="text-4xl font-bold">Developer</h2>
+        </div>
+          
+          <div className="text-container flex flex-col items-center">
+            <h2 className="text-5xl font-bold text-[#D38B7D] mb-4">UI/UX & Full-Stack</h2>
+            <h2 className="text-4xl font-bold text-[#D38B7D]"> Developer</h2>
           </div>
-        </section>
-
-        {/* Projects */}
-        <section id="projects" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">项目</h2>
-          <div className="grid gap-8 mt-6 sm:grid-cols-1 md:grid-cols-2">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
+          
+          <div className="text-container flex flex-col items-center">
+            <h2 className="text-5xl font-bold text-[#5D7A9E] mb-4">HCI & HAI</h2>
+            <h2 className="text-4xl font-bold text-[#5D7A9E]">Researcher</h2>
           </div>
-        </section>
+        </div>
+        
+        <Canvas
+            className="w-full h-full bg-[rgb(249,248,243)]"
+            camera={{ position: [0, 0, 25], fov: 75 }}  // 调整相机位置
+            rotation={[Math.PI / 4, 0, 0]}  // 调整视角角度
+            dpr={[1, 1.5]}  // 确认设备像素比是否过高
+            gl={{ alpha: true  }}  // 不使用透明背景
+          >
 
-        {/* Publications */}
-        <section id="publications" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 border-b border-black inline-block">论文</h2>
-          <div className="grid gap-6 mt-6">
-            {publications.map((pub, idx) => (
-              <PublicationCard key={idx} pub={pub} />
-            ))}
-          </div>
-        </section>
 
-        {/* Contact */}
-        <section id="contact" className="mb-4">
-          <h2 className="text-2xl font-bold mb-6 border-b border-black inline-block">联系方式</h2>
-          <ul className="space-y-2 text-sm text-gray-800">
-            <li>📧 yichuan.zhang@example.edu</li>
-            <li>🏫 清华大学人机交互实验室</li>
-            <li>📍 北京，中国</li>
-          </ul>
-        </section>
-      </main>
+          <ambientLight intensity={Math.PI / 1.5} />
+          <ScrollClouds />
+          {/* <CameraControls /> */}
+        </Canvas>
+      </section>
+  
     </div>
   );
 };
