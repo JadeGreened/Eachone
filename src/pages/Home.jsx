@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
-import HCISection from '../components/HCISection';
+import GazeJitterSection from '../components/GazeJitterSection';
 import backgroundImg from '../assets/Home/Background.png';
 import { getR2VideoPath, R2_VIDEOS } from '../utils/r2Utils';
 import backgroundPoster from '../assets/Home/Background.png';
@@ -130,7 +130,7 @@ const HomeTailwind = () => {
     { stiffness: 120, damping: 25 }
   );
   // const heroOpacity = 1;
-  const bgColor = "rgb(250, 249, 243)";
+  const bgColor = "rgb(248, 247, 240)";
 
   // 切换到角色页面
   const switchToCharacterPage = () => {
@@ -200,7 +200,7 @@ const HomeTailwind = () => {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundColor: 'rgba(234, 231, 217, 0.35)',
+              backgroundColor: 'rgba(248, 247, 240, 0.35)',
               mixBlendMode: 'multiply',
               zIndex: 2.5,
             }}
@@ -386,32 +386,20 @@ const HomeTailwind = () => {
        
        {/* HCI/AI Section */}
        <section className="relative w-full h-[100vh] overflow-hidden">
-        <HCISection />
-        </section>
+        {/* 上半部分 - GazeJitterSection */}
+        <div className="w-full h-1/2 flex justify-start items-center">
+          <div className="w-3/5 max-w-4xl ml-8"> 
+            <GazeJitterSection />
+          </div>
+        </div>
+      </section>
 
 
         {/* ——— 云层横幅，用 vh 替代 px ——— */}
         <section className="relative w-full h-[100vh] overflow-hidden">
-        {/* 文字覆盖层 - 添加这部分 */}
-        <div className="absolute inset-0 z-10 flex items-center justify-around pointer-events-none">
-        <div className="text-container flex flex-col items-center">
-          <h2 className="text-5xl font-bold mb-4">VR & Game</h2>
-          <h2 className="text-4xl font-bold">Developer</h2>
-        </div>
-          
-          <div className="text-container flex flex-col items-center">
-            <h2 className="text-5xl font-bold text-[#D38B7D] mb-4">UI/UX & Full-Stack</h2>
-            <h2 className="text-4xl font-bold text-[#D38B7D]"> Developer</h2>
-          </div>
-          
-          <div className="text-container flex flex-col items-center">
-            <h2 className="text-5xl font-bold text-[#5D7A9E] mb-4">HCI & HAI</h2>
-            <h2 className="text-4xl font-bold text-[#5D7A9E]">Researcher</h2>
-          </div>
-        </div>
-        
+
         <Canvas
-            className="w-full h-full bg-[rgb(249,248,243)]"
+            className="w-full h-full bg-[rgb(248,247,240)]"
             camera={{ position: [0, 0, 25], fov: 75 }}  // 调整相机位置
             rotation={[Math.PI / 4, 0, 0]}  // 调整视角角度
             dpr={[1, 1.5]}  // 确认设备像素比是否过高
