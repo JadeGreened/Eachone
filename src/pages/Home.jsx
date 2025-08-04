@@ -494,7 +494,7 @@ const HomeTailwind = () => {
               className="font-bold text-gray-800 mb-2 sm:mb-4"
               style={{ fontSize: 'clamp(1.125rem, 1.6vw, 2rem)' }}
             >
-              Other Publication
+              Total Publication
             </h2>
             
             {/* 项目列表 */}
@@ -876,10 +876,164 @@ const HomeTailwind = () => {
                 Know More Button
               </button>
             </div>
+            
+            
           </div>
         </div>
       </section>
+            {/* 黑色分割线 */}
+            <div 
+              className="w-full bg-black"
+              style={{ 
+                height: '1px',
+                marginTop: 'clamp(2rem, 5vw, 5rem)'
+              }}
+            ></div> 
 
+      {/* VFX & Game Section */}
+      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(248,247,240)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
+        
+        {/* 标题 */}
+        <div className="text-left mb-12" style={{ paddingLeft: '2rem' }}>
+          <h2 
+            className="font-bold text-gray-800 mb-4" 
+            style={{ 
+              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+              fontStyle: 'italic',
+              letterSpacing: '0.5px',
+              lineHeight: '1.1',
+              fontSize: 'clamp(1.25rem, 3.5vw, 4rem)'
+            }}
+          >
+            I am a VFX & Game developer
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl">
+            Visual Effects and Game Development Projects
+          </p>
+        </div>
+
+        {/* 不均匀网格布局 */}
+        <div className="vfx-grid w-full">
+          {/* 分区1 - 大区域 */}
+          <div className="vfx-item vfx-item-1 bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group">
+            <div className="relative h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <div className="text-center text-white p-6">
+                <h3 className="text-2xl font-bold mb-2">主要项目</h3>
+                <p className="text-purple-100">大型VFX项目展示</p>
+              </div>
+              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </div>
+          </div>
+
+          {/* 分区2 - 游戏开发 */}
+          <div className="vfx-item vfx-item-2 bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group">
+            <div className="relative h-full bg-gradient-to-r from-green-500 to-emerald-400 flex items-center justify-center">
+              <div className="text-center text-white p-4">
+                <h3 className="text-xl font-bold mb-2">游戏开发</h3>
+                <p className="text-green-100">独立游戏项目</p>
+              </div>
+              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </div>
+          </div>
+
+          {/* 分区3 - 动画制作 */}
+          <div className="vfx-item vfx-item-3 bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group">
+            <div className="relative h-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+              <div className="text-center text-white p-4">
+                <h3 className="text-lg font-bold mb-2">动画制作</h3>
+                <p className="text-orange-100 text-sm">角色动画</p>
+              </div>
+              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </div>
+          </div>
+
+          {/* 分区4 - UI/UX设计 */}
+          <div className="vfx-item vfx-item-4 bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group">
+            <div className="relative h-full bg-gradient-to-tl from-indigo-500 to-purple-600 flex items-center justify-center">
+              <div className="text-center text-white p-4">
+                <h3 className="text-lg font-bold mb-2">UI/UX设计</h3>
+                <p className="text-indigo-100 text-sm">游戏界面设计</p>
+              </div>
+              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </div>
+          </div>
+
+          {/* 分区5 - 粒子系统 */}
+          <div className="vfx-item vfx-item-5 bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group">
+            <div className="relative h-full bg-gradient-to-r from-teal-500 to-blue-600 flex items-center justify-center">
+              <div className="text-center text-white p-3">
+                <h3 className="text-base font-bold mb-1">粒子系统</h3>
+                <p className="text-teal-100 text-xs">特效粒子</p>
+              </div>
+              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </div>
+          </div>
+
+          {/* 分区6 - 后期合成 */}
+          <div className="vfx-item vfx-item-6 bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer group">
+            <div className="relative h-full bg-gradient-to-b from-rose-500 to-pink-600 flex items-center justify-center">
+              <div className="text-center text-white p-4">
+                <h3 className="text-lg font-bold mb-2">后期合成</h3>
+                <p className="text-rose-100 text-sm">视觉合成</p>
+              </div>
+              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          .vfx-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 1.5rem;
+            height: 85vh;
+            min-height: 700px;
+            width: 100%;
+            padding: 0 2rem;
+          }
+
+          .vfx-item-1 { grid-area: 1 / 1 / 3 / 3; } /* 大区域 2x2 */
+          .vfx-item-2 { grid-area: 3 / 1 / 4 / 3; } /* 底部左区域 2x1 */
+          .vfx-item-3 { grid-area: 1 / 3 / 2 / 5; } /* 顶部右区域 2x1 */
+          .vfx-item-4 { grid-area: 2 / 3 / 4 / 4; } /* 右侧高区域 1x2 */
+          .vfx-item-5 { grid-area: 2 / 4 / 3 / 5; } /* 右中区域 1x1 */
+          .vfx-item-6 { grid-area: 3 / 4 / 4 / 5; } /* 右下区域 1x1 */
+
+          @media (max-width: 1024px) {
+            .vfx-grid {
+              grid-template-columns: repeat(4, 1fr);
+              grid-template-rows: repeat(4, 1fr);
+              padding: 0 1.5rem;
+            }
+            
+            .vfx-item-1 { grid-area: 1 / 1 / 3 / 3; }
+            .vfx-item-2 { grid-area: 1 / 3 / 2 / 5; }
+            .vfx-item-3 { grid-area: 2 / 3 / 3 / 5; }
+            .vfx-item-4 { grid-area: 3 / 1 / 5 / 3; }
+            .vfx-item-5 { grid-area: 3 / 3 / 4 / 5; }
+            .vfx-item-6 { grid-area: 4 / 3 / 5 / 5; }
+          }
+
+          @media (max-width: 768px) {
+            .vfx-grid {
+              grid-template-columns: repeat(2, 1fr);
+              grid-template-rows: repeat(6, 1fr);
+              gap: 1rem;
+              padding: 0 1rem;
+            }
+            
+            .vfx-item-1 { grid-area: 1 / 1 / 3 / 3; }
+            .vfx-item-2 { grid-area: 3 / 1 / 4 / 3; }
+            .vfx-item-3 { grid-area: 4 / 1 / 5 / 3; }
+            .vfx-item-4 { grid-area: 5 / 1 / 7 / 2; }
+            .vfx-item-5 { grid-area: 5 / 2 / 6 / 3; }
+            .vfx-item-6 { grid-area: 6 / 2 / 7 / 3; }
+          }
+        `}</style>
+          
+        
+      </section>
 
         {/* ——— 云层横幅，用 vh 替代 px ——— */}
         <section className="relative w-full h-[100vh] overflow-hidden" style={{ paddingTop: '80px' }}>
@@ -897,6 +1051,91 @@ const HomeTailwind = () => {
           <ScrollClouds />
           {/* <CameraControls /> */}
         </Canvas>
+        
+        {/* 叠加的文字内容 */}
+        <motion.div 
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+        >
+          <style jsx>{`
+            @keyframes floatTitle {
+              0%, 100% { 
+                transform: translateY(0px) scale(1); 
+              }
+              50% { 
+                transform: translateY(-8px) scale(1.02); 
+              }
+            }
+            
+            @keyframes floatButton {
+              0%, 100% { 
+                transform: translateY(0px) scale(1); 
+              }
+              50% { 
+                transform: translateY(-6px) scale(1.03); 
+              }
+            }
+            
+            .floating-title {
+              animation: floatTitle 3.5s ease-in-out infinite;
+              animation-delay: 2s;
+            }
+            
+            .floating-button {
+              animation: floatButton 2.8s ease-in-out infinite;
+              animation-delay: 2.5s;
+            }
+          `}</style>
+          
+          {/* 标题文字 */}
+          <motion.h1 
+            className="font-bold text-black mb-8 floating-title"
+            style={{ 
+              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+              fontStyle: 'italic',
+              letterSpacing: '0.5px',
+              lineHeight: '1.1',
+              fontSize: 'clamp(2rem, 4vw, 4rem)'
+            }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ 
+              duration: 1.2, 
+              ease: "easeOut",
+              delay: 0.3
+            }}
+          >
+            I am a UI/UX designer &<br />
+            full stack developer
+          </motion.h1>
+          
+          {/* 按钮 */}
+          <motion.button 
+            className="bg-black text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-colors duration-300 shadow-lg floating-button"
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ 
+              duration: 0.8, 
+              ease: "easeOut",
+              delay: 1.2
+            }}
+            whileHover={{ 
+              scale: 1.05,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ 
+              scale: 0.95,
+              transition: { duration: 0.1 }
+            }}
+          >
+            Learn More
+          </motion.button>
+        </motion.div>
       </section>
   
     </div>
