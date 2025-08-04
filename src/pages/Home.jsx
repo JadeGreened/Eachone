@@ -8,6 +8,7 @@ import backgroundImg from '../assets/Home/Background.png';
 import { getR2VideoPath, R2_VIDEOS } from '../utils/r2Utils';
 import backgroundPoster from '../assets/Home/Background.png';
 import onSelectedPoster from '../assets/Home/Yichuan.png';
+import projectImage from '../assets/Home/CHILBW_Header.png';
 import { Canvas } from '@react-three/fiber';
 import ScrollClouds from "../components/ScrollClouds"
 import { CameraControls } from "@react-three/drei"
@@ -185,16 +186,14 @@ const HomeTailwind = () => {
         '--base-font-size': 'calc(0.8rem + 0.5vw)', // 基础字体大小变量
       }}
     >
-    <header className="sticky top-0 z-50 w-full backdrop-blur-sm bg-white/60 border-b border-black/10">
-        <Header />
-      </header>
+      <Header />
 
       {/* Hero Section */}
       
       <motion.section
           id="hero"
           className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
-          style={{ y: heroY, opacity: heroOpacity }} 
+          style={{ y: heroY, opacity: heroOpacity, paddingTop: '80px' }} 
         >
           {/* 半透明遮罩 */}
           <div
@@ -383,20 +382,507 @@ const HomeTailwind = () => {
         )}
         
         </motion.section>
-       
+       <div className="w-full h-px bg-gray-300"></div>
        {/* HCI/AI Section */}
-       <section className="relative w-full h-[100vh] overflow-hidden">
-        {/* 上半部分 - GazeJitterSection */}
-        <div className="w-full h-1/2 flex justify-start items-center">
-          <div className="w-3/5 max-w-4xl ml-8"> 
-            <GazeJitterSection />
+
+      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(248,247,240)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
+        <div 
+          className="w-full h-full flex flex-col lg:flex-row" 
+          style={{ 
+            fontSize: 'clamp(0.875rem, 1vw, 1.1rem)',
+            gap: 'clamp(1rem, 6vw, 8rem)'
+          }}
+        >
+          
+          {/* 左边部分 - 在小屏幕上100%，大屏幕上40% */}
+          <div className="w-full lg:w-[40%] flex-shrink-0">
+            {/* 标题 */}
+            <h1 
+              className="font-bold text-gray-800 mb-3 sm:mb-6" 
+              style={{ 
+                fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                fontStyle: 'italic',
+                letterSpacing: '0.5px',
+                lineHeight: '1.1',
+                fontSize: 'clamp(1.25rem, 3.5vw, 4rem)'
+              }}
+            >
+              I am a HCI/HAI researcher
+            </h1>
+            
+            {/* My Favourite Work 部分 */}
+            <div className="mb-3 sm:mb-6">
+              <h2 
+                className="font-semibold text-gray-700 mb-3"
+                style={{ fontSize: 'clamp(0.875rem, 1.1vw, 1.3rem)' }}
+              >
+                <span className="block sm:hidden">
+                  My Favourite Work! ISMAR 2025 Best Paper Nomination
+                </span>
+                <span className="hidden sm:block">
+                  My Favourite Work! 2025 ISMAR TVCG Track Best Paper Nomination Award
+                </span>
+              </h2>
+              
+              <div className="flex items-start gap-2 sm:gap-3 mb-3 sm:mb-6">
+                <span style={{ fontSize: 'clamp(1.5rem, 2.2vw, 2.8rem)' }}>🏆</span>
+                <div>
+                  <h3 
+                    className="font-bold text-gray-800 mb-2 italic"
+                    style={{ 
+                      fontSize: 'clamp(1rem, 1.3vw, 1.6rem)',
+                      lineHeight: '1.4'
+                    }}
+                  >
+                    <span className="block sm:hidden">
+                      Exploring Eye-Tracking Effects...
+                    </span>
+                    <span className="hidden sm:block">
+                      Exploring and Modeling the Effects of Eye-Tracking Accuracy and Precision on Gaze-Based Steering in Virtual Environments
+                    </span>
+                  </h3>
+                  <p 
+                    className="text-gray-600 italic"
+                    style={{ fontSize: 'clamp(0.875rem, 1.1vw, 1.25rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      X. Hu, Y. Zhang, et al.
+                    </span>
+                    <span className="hidden sm:block">
+                      X. Hu, Y. Zhang, Y. Wei, L. Zhang, Y. Li, W. Stuerzlinger, H. Liang
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* GazeJitter组件 */}
+            <div className="mb-3 sm:mb-6 border border-gray-300 rounded-lg overflow-hidden">
+              <GazeJitterSection />
+            </div>
+
+            {/* 研究兴趣描述 */}
+            <div 
+              className="text-gray-700 leading-relaxed"
+              style={{ 
+                fontSize: 'clamp(0.8rem, 0.95vw, 1.1rem)',
+                lineHeight: '1.6'
+              }}
+            >
+              <p className="block sm:hidden">
+                HCI/HAI researcher focused on intelligent systems for immersive and mobile scenarios. 
+                Working on AI-augmented interfaces combining eye-tracking, body motion, and transformers 
+                for enhanced user interaction.
+              </p>
+              <p className="hidden sm:block">
+                I am an HCI/HAI (Human-Computer/AI Interaction) researcher with a strong interest in 
+                designing intelligent systems that enhance user interaction in immersive and mobile 
+                scenarios. My work spans AI agent behavior and VR/AR input techniques. I've explored gaze-
+                based navigation, combining user studies with system implementation. Currently, I focus on 
+                integrating AI models—such as transformers—with sensor data like eye-tracking and body 
+                motion to enhance input performance in dynamic environments. My long-term goal is to 
+                build adaptive, AI-augmented interfaces that support seamless interaction across varied 
+                contexts.
+              </p>
+            </div>
+          </div>
+
+          {/* 右边部分 - 在小屏幕上100%，大屏幕上60% */}
+          <div className="w-full lg:w-[60%] flex flex-col">
+            {/* Other Publication 标题 */}
+            <h2 
+              className="font-bold text-gray-800 mb-2 sm:mb-4"
+              style={{ fontSize: 'clamp(1.125rem, 1.6vw, 2rem)' }}
+            >
+              Other Publication
+            </h2>
+            
+            {/* 项目列表 */}
+            <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(1rem, 2vw, 2.5rem)' }}>
+              {/* 项目1 */}
+              <div 
+                className="flex bg-white/80 backdrop-blur-sm rounded-lg shadow-sm"
+                style={{ 
+                  gap: 'clamp(0.75rem, 1.5vw, 2rem)',
+                  padding: 'clamp(0.75rem, 1.2vw, 1.5rem)'
+                }}
+              >
+                <div 
+                  className="rounded flex-shrink-0 flex items-center justify-center overflow-hidden"
+                  style={{ 
+                    width: '30%',
+                    height: 'clamp(4rem, 8vw, 8rem)',
+                    minWidth: 'clamp(3rem, 6vw, 6rem)'
+                  }}
+                >
+                  <img 
+                    src={projectImage}
+                    alt="Project Figure"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div style={{ width: '70%' }}>
+                  <h4 
+                    className="font-semibold text-gray-800 mb-1 italic"
+                    style={{ 
+                      fontSize: 'clamp(0.8rem, 0.95vw, 1.1rem)',
+                      lineHeight: '1.3'
+                    }}
+                  >
+                    <span className="block sm:hidden">
+                      Eye-Tracking Effects in VR...
+                    </span>
+                    <span className="hidden sm:block">
+                      Exploring and Modeling the Effects of Eye-Tracking Accuracy and Precision on Gaze-Based Steering in Virtual Environments
+                    </span>
+                  </h4>
+                  <p 
+                    className="text-gray-600 mb-2"
+                    style={{ fontSize: 'clamp(0.7rem, 0.8vw, 0.9rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      X. Hu, Y. Zhang, et al.
+                    </span>
+                    <span className="hidden sm:block">
+                      Xuning Hu, Yichuan Zhang, Yushi Wei, Liangyuting Zhang, Yue Li, Wolfgang Stuerzlinger, Hai-Ning Liang.
+                    </span>
+                  </p>
+                  <p 
+                    className="text-gray-500 italic mb-3"
+                    style={{ fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      TVCG (ISMAR 2025)
+                    </span>
+                    <span className="hidden sm:block">
+                      IEEE Conference on Virtual Reality and 3D User Interfaces (TVCG (ISMAR 2025))
+                    </span>
+                  </p>
+                  <div className="flex gap-2">
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Search
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Collab
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Eupido
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 项目2 */}
+              <div 
+                className="flex bg-white/80 backdrop-blur-sm rounded-lg shadow-sm"
+                style={{ 
+                  gap: 'clamp(0.75rem, 1.5vw, 2rem)',
+                  padding: 'clamp(0.75rem, 1.2vw, 1.5rem)'
+                }}
+              >
+                <div 
+                  className="rounded flex-shrink-0 flex items-center justify-center overflow-hidden"
+                  style={{ 
+                    width: '30%',
+                    height: 'clamp(4rem, 8vw, 8rem)',
+                    minWidth: 'clamp(3rem, 6vw, 6rem)'
+                  }}
+                >
+                  <img 
+                    src={projectImage}
+                    alt="Project Figure"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div style={{ width: '70%' }}>
+                  <h4 
+                    className="font-semibold text-gray-800 mb-1"
+                    style={{ 
+                      fontSize: 'clamp(0.8rem, 0.95vw, 1.1rem)',
+                      lineHeight: '1.3'
+                    }}
+                  >
+                    <span className="block sm:hidden">
+                      Moving Target Selection in VR...
+                    </span>
+                    <span className="hidden sm:block">
+                      Optimizing Moving Target Selection in VR by Integrating Proximity-Based Feedback Types and Modalities
+                    </span>
+                  </h4>
+                  <p 
+                    className="text-gray-600 mb-2"
+                    style={{ fontSize: 'clamp(0.7rem, 0.8vw, 0.9rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      X. Hu, W. Xu, et al.
+                    </span>
+                    <span className="hidden sm:block">
+                      Xuning Hu, Wenxuan Xu, Yushi Wei, Zhang Hao, Jin Huang, Hai-Ning Liang.
+                    </span>
+                  </p>
+                  <p 
+                    className="text-gray-500 italic mb-3"
+                    style={{ fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      VR 2025
+                    </span>
+                    <span className="hidden sm:block">
+                      IEEE Conference on Virtual Reality and 3D User Interfaces (VR 2025)
+                    </span>
+                  </p>
+                  <div className="flex gap-2">
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Search
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Collab
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Eupido
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 项目3 */}
+              <div 
+                className="flex bg-white/80 backdrop-blur-sm rounded-lg shadow-sm"
+                style={{ 
+                  gap: 'clamp(0.75rem, 1.5vw, 2rem)',
+                  padding: 'clamp(0.75rem, 1.2vw, 1.5rem)'
+                }}
+              >
+                <div 
+                  className="rounded flex-shrink-0 flex items-center justify-center overflow-hidden"
+                  style={{ 
+                    width: '30%',
+                    height: 'clamp(4rem, 8vw, 8rem)',
+                    minWidth: 'clamp(3rem, 6vw, 6rem)'
+                  }}
+                >
+                  <img 
+                    src={projectImage}
+                    alt="Project Figure"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div style={{ width: '70%' }}>
+                  <h4 
+                    className="font-semibold text-gray-800 mb-1"
+                    style={{ 
+                      fontSize: 'clamp(0.8rem, 0.95vw, 1.1rem)',
+                      lineHeight: '1.3'
+                    }}
+                  >
+                    <span className="block sm:hidden">
+                      3D Piloting in Virtual Environments...
+                    </span>
+                    <span className="hidden sm:block">
+                      Exploring the Effects of Spatial Constraints and Curvature for 3D Piloting in Virtual Environments
+                    </span>
+                  </h4>
+                  <p 
+                    className="text-gray-600 mb-2"
+                    style={{ fontSize: 'clamp(0.7rem, 0.8vw, 0.9rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      X. Hu, X. Yan, et al.
+                    </span>
+                    <span className="hidden sm:block">
+                      Xuning Hu, Xinan Yan, Yushi Wei, Wenxuan Xu, Yue Li, Yue Liu, Hai-Ning Liang.
+                    </span>
+                  </p>
+                  <p 
+                    className="text-gray-500 italic mb-3"
+                    style={{ fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      ISMAR 2024
+                    </span>
+                    <span className="hidden sm:block">
+                      IEEE International Symposium on Mixed & Augmented Reality (ISMAR 2024)
+                    </span>
+                  </p>
+                  <div className="flex gap-2">
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Search
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Collab
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Eupido
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 项目4 */}
+              <div 
+                className="flex bg-white/80 backdrop-blur-sm rounded-lg shadow-sm"
+                style={{ 
+                  gap: 'clamp(0.75rem, 1.5vw, 2rem)',
+                  padding: 'clamp(0.75rem, 1.2vw, 1.5rem)'
+                }}
+              >
+                <div 
+                  className="rounded flex-shrink-0 flex items-center justify-center overflow-hidden"
+                  style={{ 
+                    width: '30%',
+                    height: 'clamp(4rem, 8vw, 8rem)',
+                    minWidth: 'clamp(3rem, 6vw, 6rem)'
+                  }}
+                >
+                  <img 
+                    src={projectImage}
+                    alt="Project Figure"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div style={{ width: '70%' }}>
+                  <h4 
+                    className="font-semibold text-gray-800 mb-1"
+                    style={{ 
+                      fontSize: 'clamp(0.8rem, 0.95vw, 1.1rem)',
+                      lineHeight: '1.3'
+                    }}
+                  >
+                    <span className="block sm:hidden">
+                      Gaze-Based Steering in VR...
+                    </span>
+                    <span className="hidden sm:block">
+                      Exploring Gaze-Based Steering Behavior in Virtual Reality
+                    </span>
+                  </h4>
+                  <p 
+                    className="text-gray-600 mb-2"
+                    style={{ fontSize: 'clamp(0.7rem, 0.8vw, 0.9rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      X. Hu, Y. Zhang, et al.
+                    </span>
+                    <span className="hidden sm:block">
+                      Xuning Hu, Yichuan Zhang, Yushi Wei, Yue Li, Wolfgang Stuerzlinger, Hai-Ning Liang.
+                    </span>
+                  </p>
+                  <p 
+                    className="text-gray-500 italic mb-3"
+                    style={{ fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)' }}
+                  >
+                    <span className="block sm:hidden">
+                      CHI LBW 2025
+                    </span>
+                    <span className="hidden sm:block">
+                      ACM CHI Conference on Human Factors in Computing Systems (LBW 2025)
+                    </span>
+                  </p>
+                  <div className="flex gap-2">
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Search
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Collab
+                    </button>
+                    <button 
+                      className="px-3 py-1 text-gray-800 rounded"
+                      style={{ 
+                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                        backgroundColor: 'rgb(250, 247, 239)'
+                      }}
+                    >
+                      Eupido
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Know More Button */}
+            <div className="text-right" style={{ marginTop: 'clamp(1.5rem, 4vw, 4rem)' }}>
+              <button 
+                className="bg-gray-800 hover:bg-gray-900 text-white rounded-lg font-semibold transition-colors"
+                style={{ 
+                  fontSize: 'clamp(0.9rem, 1.2vw, 1.3rem)',
+                  padding: 'clamp(0.6rem, 1vw, 1.25rem) clamp(1.5rem, 3vw, 3.5rem)'
+                }}
+              >
+                Know More Button
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
 
         {/* ——— 云层横幅，用 vh 替代 px ——— */}
-        <section className="relative w-full h-[100vh] overflow-hidden">
+        <section className="relative w-full h-[100vh] overflow-hidden" style={{ paddingTop: '80px' }}>
 
         <Canvas
             className="w-full h-full bg-[rgb(248,247,240)]"

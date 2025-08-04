@@ -7,16 +7,16 @@ const Header = ({ customMessage, showNavItems = true }) => {
   const controls = useAnimation();
   const [hidden, setHidden] = useState(false);
 
-  useEffect(() => {
-    return scrollY.onChange((latest) => {
-      const isScrollingDown = latest > scrollY.getPrevious();
-      if (latest > 100 && isScrollingDown) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
-    });
-  }, [scrollY]);
+  // useEffect(() => {
+  //   return scrollY.onChange((latest) => {
+  //     const isScrollingDown = latest > scrollY.getPrevious();
+  //     if (latest > 100 && isScrollingDown) {
+  //       setHidden(true);
+  //     } else {
+  //       setHidden(false);
+  //     }
+  //   });
+  // }, [scrollY]);
 
   const variants = {
     visible: { y: 0, opacity: 1 },
@@ -34,11 +34,11 @@ const Header = ({ customMessage, showNavItems = true }) => {
   return (
     <motion.header
       variants={variants}
-      animate={hidden ? 'hidden' : 'visible'}
+      animate="visible"
       transition={{ duration: 0.35, ease: 'easeInOut' }}
-      className="fixed top-0 left-0 right-0 z-50"
+      className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-md shadow-sm"
     >
-      <header className="w-full bg-white/95 py-4 flex items-center justify-between border-b border-black h-20" style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif', color: '#111' }}>
+      <header className="w-full bg-white/90 py-4 flex items-center justify-between border-b border-black/10 h-20" style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif', color: '#111' }}>
         <div className="container mx-auto flex items-center justify-between px-6 py-3">
           {/* Logo 显示并添加淡入效果 - 最先出现 */}
           {customMessage ? (
