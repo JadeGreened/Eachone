@@ -361,7 +361,7 @@ const HomeTailwind = () => {
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ duration: 1, delay: 3 }}
                >
-                {/* Mammoth Icon */}
+                {/* Memories.ai Icon */}
                 <div className="flex items-center text-gray-800" style={{ gap: 'clamp(0.5rem, 1vw, 1rem)' }}>
                   <div 
                     className="bg-gray-800 rounded flex items-center justify-center"
@@ -381,7 +381,7 @@ const HomeTailwind = () => {
                     className="font-semibold"
                     style={{ fontSize: 'clamp(1rem, 1.8vw, 2rem)' }}
                   >
-                    Mammoth
+                    Memories.ai
                   </span>
                 </div>
 
@@ -445,19 +445,21 @@ const HomeTailwind = () => {
                 left: '50%',
                 top: '50%',
                 transform: 'translate(-50%, -50%)',
+                paddingTop: '80px', // 为Header留出空间
+                marginTop: '-40px', // 调整整体位置，避免过度下移
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
             >
               <motion.h1 
-                className="font-bold mb-6"
+                className="font-bold mb-4"
                 style={{ 
                   fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
                   fontStyle: 'italic',
                   letterSpacing: '0.5px',
                   lineHeight: '1.1',
-                  fontSize: 'clamp(2rem, 8vw, 3rem)', // 小屏幕适配的字体大小
+                  fontSize: 'clamp(1.75rem, 7vw, 3rem)', // 稍微减小最小字体，适配极小屏幕
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -469,20 +471,20 @@ const HomeTailwind = () => {
               </motion.h1>
               
               <motion.div 
-                className="w-32 h-0.5 bg-black mb-8 mx-auto"
+                className="w-24 h-0.5 bg-black mb-6 mx-auto"
                 initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 128 }}
+                animate={{ opacity: 1, width: 96 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
               ></motion.div>
               
               <motion.div 
-                className="space-y-4 max-w-lg mx-auto"
+                className="space-y-3 max-w-sm mx-auto px-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.5, delay: 2 }}
                 style={{
-                  fontSize: 'clamp(0.9rem, 4vw, 1.2rem)', // 小屏幕适配的字体大小
-                  lineHeight: '1.4',
+                  fontSize: 'clamp(0.85rem, 3.5vw, 1.2rem)', // 进一步优化小屏幕字体
+                  lineHeight: '1.5',
                 }}
               >
                 <p>
@@ -498,17 +500,17 @@ const HomeTailwind = () => {
 
               {/* 机构图标 - 小屏幕版本 */}
               <motion.div 
-                className="flex flex-col items-center gap-4 mt-8"
+                className="flex flex-col items-center gap-3 mt-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 3 }}
               >
-                {/* Mammoth Icon */}
+                {/* Memories.ai Icon */}
                 <div className="flex items-center gap-2 text-gray-800">
                   <div className="w-6 h-6 bg-gray-800 rounded flex items-center justify-center">
                     <span className="text-white font-bold text-xs">M</span>
                   </div>
-                  <span className="font-semibold text-base">Mammoth</span>
+                  <span className="font-semibold text-base">Memories.ai</span>
                 </div>
 
                 {/* HKUST Icon */}
