@@ -10,7 +10,15 @@ const ResearchAreaCardComponent = React.forwardRef(({ icon, title, description, 
     {...props}
   >
     <div className="text-3xl mb-2">{icon}</div>
-    <div className="font-bold text-xl mb-1">{title}</div>
+    <div 
+      className="font-bold text-xl mb-1"
+      style={{ 
+        fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+        fontStyle: 'italic'
+      }}
+    >
+      {title}
+    </div>
     <div className="text-base mb-2" style={{ color: '#444' }}>{description}</div>
     <div className="flex flex-wrap gap-2 mt-2">
       {tags.map((tag, idx) => (  // 使用tags

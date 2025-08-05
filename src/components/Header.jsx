@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import { useScroll } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const Header = ({ customMessage, showNavItems = true }) => {
-  const { scrollY } = useScroll();
-  const controls = useAnimation();
-  const [hidden, setHidden] = useState(false);
 
   // useEffect(() => {
   //   return scrollY.onChange((latest) => {
@@ -39,12 +35,11 @@ const Header = ({ customMessage, showNavItems = true }) => {
       className="fixed top-0 left-0 right-0 z-[100] backdrop-blur-md shadow-sm"
     >
       <header className="w-full bg-white/90 py-4 flex items-center justify-between border-b border-black/10 h-20" style={{ fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif', color: '#111' }}>
-        <div className="container mx-auto flex items-center justify-between px-6 py-3">
+        <div className="w-full flex items-center px-6 py-3">
           {/* Logo 显示并添加淡入效果 - 最先出现 */}
           {customMessage ? (
-            <motion.a 
-              href="#" 
-              className="text-xl font-bold text-black"
+            <motion.div 
+              className="text-xl font-bold text-black cursor-pointer"
               initial={{ opacity: 0, filter: 'blur(4px)' }}
               animate={{ opacity: 1, filter: 'blur(0px)' }}
               transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
@@ -53,62 +48,90 @@ const Header = ({ customMessage, showNavItems = true }) => {
                 fontStyle: 'italic',
                 fontWeight: 'bold'
               }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               Eachone's Portfolio
-            </motion.a>
+            </motion.div>
           ) : (
-            <a href="#" className="text-xl font-bold text-black">Eachone's Portfolio</a>
+            <div 
+              className="text-xl font-bold text-black cursor-pointer"
+              style={{ 
+                fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                fontStyle: 'italic',
+                fontWeight: 'bold'
+              }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              Eachone's Portfolio
+            </div>
           )}
           
-          {customMessage ? (
-            <div className="absolute left-0 right-0 mx-auto text-center" style={{ 
-              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
-              fontStyle: 'italic',
-              letterSpacing: '0.5px'
-            }}>
-              {/* 两行交错排列的文字 */}
-              <div className="relative h-16">
-                {/* 第一行文字 - 第二个出现 */}
-                <motion.div
-                  initial={{ opacity: 0, filter: 'blur(4px)' }}
-                  animate={{ opacity: 1, filter: 'blur(0px)' }}
-                  transition={{ duration: 1.2, ease: 'easeOut', delay: 1 }}
-                  className="absolute w-full text-center"
-                  style={{ fontSize: '1.1rem', fontWeight: '500', top: '0', paddingRight: '5rem' }}
-                >
-                  Simplicity is the ultimate sophistication.
-                </motion.div>
-                
-                {/* 第二行文字 - 最后出现 */}
-                <motion.div
-                  initial={{ opacity: 0, filter: 'blur(4px)' }}
-                  animate={{ opacity: 1, filter: 'blur(0px)' }}
-                  transition={{ duration: 1.2, ease: 'easeOut', delay: 2 }}
-                  className="absolute w-full text-center"
-                  style={{ fontSize: '1.1rem', fontWeight: '500', top: '1.6rem', paddingLeft: '5rem' }}
-                >
-                  Please click the guy in the middle
-                </motion.div>
+          {/* 中间内容区域 - 使用flex-1来占据剩余空间 */}
+          <div className="flex-1 flex justify-center relative">
+            {customMessage ? (
+              <div className="text-center" style={{ 
+                fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                fontStyle: 'italic',
+                letterSpacing: '0.5px'
+              }}>
+                {/* 两行交错排列的文字 */}
+                <div className="relative h-16">
+                  {/* 第一行文字 - 第二个出现 */}
+                  <motion.div
+                    initial={{ opacity: 0, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, filter: 'blur(0px)' }}
+                    transition={{ duration: 1.2, ease: 'easeOut', delay: 1 }}
+                    className="absolute w-full text-center"
+                    style={{ fontSize: '1.1rem', fontWeight: '500', top: '0', paddingRight: '5rem' }}
+                  >
+                    Simplicity is the ultimate sophistication.
+                  </motion.div>
+                  
+                  {/* 第二行文字 - 最后出现 */}
+                  <motion.div
+                    initial={{ opacity: 0, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, filter: 'blur(0px)' }}
+                    transition={{ duration: 1.2, ease: 'easeOut', delay: 2 }}
+                    className="absolute w-full text-center"
+                    style={{ fontSize: '1.1rem', fontWeight: '500', top: '1.6rem', paddingLeft: '5rem' }}
+                  >
+                    Please click the guy in the middle
+                  </motion.div>
+                </div>
               </div>
-            </div>
-          ) : showNavItems ? (
-            <div className="hidden md:flex items-center space-x-8 mx-auto">
-              {navItems.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="text-black hover:text-gray-600 transition-colors duration-200 text-sm font-medium"
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div>
-          ) : null}
-          
-          {/* 为了保持布局平衡，添加一个不可见的占位元素 */}
-          <div className="invisible text-xl font-bold">
-            Eachone's Portfolio
+            ) : showNavItems ? (
+              <div className="hidden md:flex items-center space-x-8">
+                {navItems.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="text-black hover:text-gray-600 transition-colors duration-200 text-sm font-medium"
+                    style={{ 
+                      fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                      fontStyle: 'italic'
+                    }}
+                  >
+                    {item.name}
+                  </a>
+                ))}
+              </div>
+            ) : null}
           </div>
+          
+          {/* 右侧简历下载按钮 */}
+          <motion.button 
+            className="bg-black text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-800 transition-colors duration-300 shadow-lg hidden md:block"
+            whileHover={{ 
+              scale: 1.05,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ 
+              scale: 0.95,
+              transition: { duration: 0.1 }
+            }}
+          >
+            Here for my resume
+          </motion.button>
           
           <div className="md:hidden">
             {/* Mobile menu button can be added here */}

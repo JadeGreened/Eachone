@@ -125,13 +125,13 @@ const HomeTailwind = () => {
   // const heroY = useTransform(scrollY, [0, 500], [0, -120]);
   const heroY = 0;
 
-  /* 2. 透明度：0px→1，600px→0   （区间不要和 heroY 的输出重复） */
-  const heroOpacity = useSpring(
-    useTransform(scrollY, [0, 600], [1, 0]),
-    { stiffness: 120, damping: 25 }
-  );
-  // const heroOpacity = 1;
-  const bgColor = "rgb(248, 247, 240)";
+  /* 2. 透明度：固定为1，不随滚动变化 */
+  // const heroOpacity = useSpring(
+  //   useTransform(scrollY, [0, 600], [1, 0]),
+  //   { stiffness: 120, damping: 25 }
+  // );
+  const heroOpacity = 1;
+  const bgColor = "rgb(249, 248, 241)";
 
   // 切换到角色页面
   const switchToCharacterPage = () => {
@@ -186,6 +186,7 @@ const HomeTailwind = () => {
         '--base-font-size': 'calc(0.8rem + 0.5vw)', // 基础字体大小变量
       }}
     >
+      <Leva hidden />
       <Header />
 
       {/* Hero Section */}
@@ -195,16 +196,8 @@ const HomeTailwind = () => {
           className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
           style={{ y: heroY, opacity: heroOpacity, paddingTop: '80px' }} 
         >
-          {/* 半透明遮罩 */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundColor: 'rgba(248, 247, 240, 0.35)',
-              mixBlendMode: 'multiply',
-              zIndex: 2.5,
-            }}
-          />
-          {/* 视频背景 */}
+
+          {/* 视频背景 - 只在大屏幕显示 */}
           <motion.video
             src={R2_VIDEOS.backgroundLoop}
             autoPlay
@@ -214,14 +207,14 @@ const HomeTailwind = () => {
             onCanPlayThrough={handleVideoReady}
             initial={{ opacity: currentPage === 'background' ? 1 : 0 }} 
             animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
-            className="absolute left-0 right-0 bottom-0 w-full object-cover"
+            className="absolute left-0 right-0 bottom-0 w-full object-cover hidden md:block"
             style={{ top: '8%', height: '92%', zIndex: 1 }}
             transition={{ duration: 0.5 }}
           />
-          {/* onSelected 视频 */}
+          {/* onSelected 视频 - 只在大屏幕显示 */}
           <motion.img
             src={getR2VideoPath("Yichuan.png")}
-            className="absolute left-0 object-cover"
+            className="absolute left-0 object-cover hidden md:block"
             style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
             variants={posterVariants}
             initial="loading"
@@ -237,18 +230,18 @@ const HomeTailwind = () => {
             preload="auto"
             onCanPlayThrough={() => setSelectedReady(true)}
             onEnded={() => setOnSelectedFinished(true)}
-            className="absolute left-0 object-cover"
+            className="absolute left-0 object-cover hidden md:block"
             style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
             variants={videoVariants}
             initial="loading"
             animate={currentPage === 'character' && !onSelectedFinished ? motionState : 'loading'}
             transition={{ duration: 0 }}
           />
-          {/* StandStill 视频 */}
+          {/* StandStill 视频 - 只在大屏幕显示 */}
           <motion.img
             src={onSelectedPoster}
             alt=""
-            className="absolute left-0 object-cover"
+            className="absolute left-0 object-cover hidden md:block"
             style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
             initial={{ opacity: 0 }}
             animate={{
@@ -266,7 +259,7 @@ const HomeTailwind = () => {
             playsInline
             preload="auto"
             onCanPlayThrough={() => setStillReady(true)}
-            className="absolute left-0 object-cover"
+            className="absolute left-0 object-cover hidden md:block"
             style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
             initial={{ opacity: 0 }}
             animate={{
@@ -274,13 +267,13 @@ const HomeTailwind = () => {
             }}
             transition={{ duration: 0, ease: 'easeOut' }}
           />
-          {/* 半透明米黄色遮罩 */}
+          {/* 视频区域蒙层 - 只在大屏幕显示 */}
           <div
-            className="absolute left-0 right-0 bottom-0"
+            className="absolute left-0 right-0 bottom-0 pointer-events-none hidden md:block"
             style={{
               zIndex: 2,
               top: '8%',
-              backgroundColor: 'rgba(251, 249, 243, 0.7)',
+              backgroundColor: 'rgba(249, 248, 241, 0.7)',
             }}
           />
           {/* 可交互人物蒙层 */}
@@ -298,94 +291,271 @@ const HomeTailwind = () => {
         {/* 文字内容 */}
         
         {!isFirstVisit && (
-          <motion.div 
-            className="absolute text-left"
-            style={{ 
-              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
-              width: 'clamp(500px, 50%, 1200px)', // 使用clamp控制宽度范围，最小500px，最大1200px
-              userSelect: 'text', // 确保文本可以被选择
-              right: '10%', 
-              top: '20%', 
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.h1 
-              className="font-bold mb-8"
+          <>
+            {/* 大屏幕文字布局 */}
+            <motion.div 
+              className="absolute text-left hidden md:block"
               style={{ 
-                fontStyle: 'italic',
-                letterSpacing: '0.5px',
-                lineHeight: '1.1',
-                fontSize: 'clamp(2.5rem, 5vw, 6rem)', // 使用clamp确保字体大小在大屏幕上继续增加
+                fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                width: 'clamp(500px, 50%, 1200px)',
+                userSelect: 'text',
+                right: '10%', 
+                top: '20%',
               }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-            >
-              Hi There! I'm<br />
-              Yichuan (Eachone)<br />
-              Zhang.
-            </motion.h1>
-            
-            <motion.div 
-              className="w-40 h-0.5 bg-black mb-10"
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: 160 }}
-              transition={{ duration: 0.8, delay: 1.2 }}
-            ></motion.div>
-            
-            <motion.div 
-              className="space-y-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1.5, delay: 2 }}
-              style={{
-                fontSize: 'clamp(1rem, 1.3vw, 1.8rem)', // 减小字体大小范围
-                lineHeight: '1.2',
-                maxWidth: '100%', // 确保内容不会溢出父容器
-              }}
+              transition={{ duration: 0.8 }}
             >
-              <p>
-                I am Yichuan Zhang, a senior majoring in Information and Computing Science 
-                at Xi'an Jiaotong-Liverpool University (XJTLU).
-              </p>
-              <p> 
-                Currently, I work as a Research Assistant at the X-CHI Lab under the guidance of 
-                Professor Hai-Ning Liang at HKUST-GZ.
-              </p>
-              <p>
-                My research interests lie in Human-Computer Interaction, Text Entry 
-                and VR development. My current work is focused on modeling user behavior patterns 
-                in virtual environment.
-              </p>
+              <motion.h1 
+                className="font-bold mb-8"
+                style={{ 
+                  fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                  fontStyle: 'italic',
+                  letterSpacing: '0.5px',
+                  lineHeight: '1.1',
+                  fontSize: 'clamp(2.5rem, 5vw, 6rem)',
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+              >
+                Hi There! I'm<br />
+                Yichuan (Eachone)<br />
+                Zhang.
+              </motion.h1>
+              
+              <motion.div 
+                className="w-40 h-0.5 bg-black mb-10"
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 160 }}
+                transition={{ duration: 0.8, delay: 1.2 }}
+              ></motion.div>
+              
+              <motion.div 
+                className="space-y-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, delay: 2 }}
+                style={{
+                  fontSize: 'clamp(1rem, 1.3vw, 1.8rem)',
+                  lineHeight: '1.2',
+                  maxWidth: '100%',
+                }}
+              >
+                <p>
+                  I am Yichuan Zhang, a senior majoring in Information and Computing Science at Xi'an Jiaotong-Liverpool University (XJTLU).
+                </p>
+                <p>
+                  Currently, I work as a Research Assistant at the X-CHI Lab under the guidance of Professor Hai-Ning Liang at HKUST-GZ.
+                </p>
+                <p>
+                  My research interests lie in Human-Computer Interaction, Text Entry and VR development. My current work is focused on modeling user behavior patterns in virtual environment.
+                </p>
+              </motion.div>
+
+                             {/* 机构图标 - 大屏幕版本 */}
+               <motion.div 
+                 className="flex items-center justify-between mt-12"
+                 style={{ width: '100%', maxWidth: '100%' }}
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ duration: 1, delay: 3 }}
+               >
+                {/* Mammoth Icon */}
+                <div className="flex items-center text-gray-800" style={{ gap: 'clamp(0.5rem, 1vw, 1rem)' }}>
+                  <div 
+                    className="bg-gray-800 rounded flex items-center justify-center"
+                    style={{ 
+                      width: 'clamp(2rem, 3vw, 3.5rem)',
+                      height: 'clamp(2rem, 3vw, 3.5rem)'
+                    }}
+                  >
+                    <span 
+                      className="text-white font-bold"
+                      style={{ fontSize: 'clamp(0.875rem, 1.5vw, 1.5rem)' }}
+                    >
+                      M
+                    </span>
+                  </div>
+                  <span 
+                    className="font-semibold"
+                    style={{ fontSize: 'clamp(1rem, 1.8vw, 2rem)' }}
+                  >
+                    Mammoth
+                  </span>
+                </div>
+
+                {/* HKUST Icon */}
+                <div className="flex items-center text-gray-800" style={{ gap: 'clamp(0.5rem, 1vw, 1rem)' }}>
+                  <div 
+                    className="bg-gray-800 rounded-full flex items-center justify-center"
+                    style={{ 
+                      width: 'clamp(2rem, 3vw, 3.5rem)',
+                      height: 'clamp(2rem, 3vw, 3.5rem)'
+                    }}
+                  >
+                    <span 
+                      className="text-white font-bold"
+                      style={{ fontSize: 'clamp(0.875rem, 1.5vw, 1.5rem)' }}
+                    >
+                      H
+                    </span>
+                  </div>
+                  <span 
+                    className="font-semibold"
+                    style={{ fontSize: 'clamp(1rem, 1.8vw, 2rem)' }}
+                  >
+                    HKUST-GZ
+                  </span>
+                </div>
+
+                {/* XJTLU Icon */}
+                <div className="flex items-center text-gray-800" style={{ gap: 'clamp(0.5rem, 1vw, 1rem)' }}>
+                  <div 
+                    className="bg-gray-800 rounded flex items-center justify-center"
+                    style={{ 
+                      width: 'clamp(2rem, 3vw, 3.5rem)',
+                      height: 'clamp(2rem, 3vw, 3.5rem)'
+                    }}
+                  >
+                    <span 
+                      className="text-white font-bold"
+                      style={{ fontSize: 'clamp(0.875rem, 1.5vw, 1.5rem)' }}
+                    >
+                      X
+                    </span>
+                  </div>
+                  <span 
+                    className="font-semibold"
+                    style={{ fontSize: 'clamp(1rem, 1.8vw, 2rem)' }}
+                  >
+                    XJTLU
+                  </span>
+                </div>
+              </motion.div>
             </motion.div>
-            
-            {/* 装饰性图标 - 使用相对定位 */}
-            <div className="absolute" style={{ top: '-5%', right: '5%', fontSize: '1.5rem', opacity: 0.5 }}>✦</div>
-            <div className="absolute" style={{ top: '5%', right: '-15%' }}>
-              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z" fill="currentColor" fillOpacity="0.7"/>
-                <ellipse cx="12" cy="12" rx="5" ry="5" fill="currentColor" fillOpacity="0.5" />
-              </svg>
-            </div>
-            <div className="absolute" style={{ bottom: '20%', right: '-10%', fontSize: '2rem', opacity: 0.5 }}>✧</div>
-            <div className="absolute" style={{ bottom: '-5%', right: '15%', fontSize: '1.8rem', opacity: 0.5 }}>✦</div>
-            <div className="absolute" style={{ bottom: '15%', right: '-20%' }}>
-              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.7 2.7C18.9 3.8 23.3 9.5 22.2 15.8C21.1 22 15.4 26.4 9.2 25.3C3 24.2 -1.4 18.5 -0.3 12.3C0.8 6 6.5 1.6 12.7 2.7Z" fill="currentColor" fillOpacity="0.1" />
-                <path d="M5 18L19 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M19 18V4H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-          </motion.div>
+
+            {/* 小屏幕文字布局 - 居中显示 */}
+            <motion.div 
+              className="absolute text-center md:hidden px-4"
+              style={{ 
+                fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                width: '100%',
+                userSelect: 'text',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.h1 
+                className="font-bold mb-6"
+                style={{ 
+                  fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                  fontStyle: 'italic',
+                  letterSpacing: '0.5px',
+                  lineHeight: '1.1',
+                  fontSize: 'clamp(2rem, 8vw, 3rem)', // 小屏幕适配的字体大小
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+              >
+                Hi There! I'm<br />
+                Yichuan (Eachone)<br />
+                Zhang.
+              </motion.h1>
+              
+              <motion.div 
+                className="w-32 h-0.5 bg-black mb-8 mx-auto"
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 128 }}
+                transition={{ duration: 0.8, delay: 1.2 }}
+              ></motion.div>
+              
+              <motion.div 
+                className="space-y-4 max-w-lg mx-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, delay: 2 }}
+                style={{
+                  fontSize: 'clamp(0.9rem, 4vw, 1.2rem)', // 小屏幕适配的字体大小
+                  lineHeight: '1.4',
+                }}
+              >
+                <p>
+                  I am Yichuan Zhang, a senior majoring in Information and Computing Science at Xi'an Jiaotong-Liverpool University (XJTLU).
+                </p>
+                <p>
+                  Currently, I work as a Research Assistant at the X-CHI Lab under the guidance of Professor Hai-Ning Liang at HKUST-GZ.
+                </p>
+                <p>
+                  My research interests lie in Human-Computer Interaction, Text Entry and VR development. My current work is focused on modeling user behavior patterns in virtual environment.
+                </p>
+              </motion.div>
+
+              {/* 机构图标 - 小屏幕版本 */}
+              <motion.div 
+                className="flex flex-col items-center gap-4 mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 3 }}
+              >
+                {/* Mammoth Icon */}
+                <div className="flex items-center gap-2 text-gray-800">
+                  <div className="w-6 h-6 bg-gray-800 rounded flex items-center justify-center">
+                    <span className="text-white font-bold text-xs">M</span>
+                  </div>
+                  <span className="font-semibold text-base">Mammoth</span>
+                </div>
+
+                {/* HKUST Icon */}
+                <div className="flex items-center gap-2 text-gray-800">
+                  <div className="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-xs">H</span>
+                  </div>
+                  <span className="font-semibold text-base">HKUST-GZ</span>
+                </div>
+
+                {/* XJTLU Icon */}
+                <div className="flex items-center gap-2 text-gray-800">
+                  <div className="w-6 h-6 bg-gray-800 rounded flex items-center justify-center">
+                    <span className="text-white font-bold text-xs">X</span>
+                  </div>
+                  <span className="font-semibold text-base">XJTLU</span>
+                </div>
+              </motion.div>
+            </motion.div>
+          </>
         )}
+
+        {/* 装饰性图标 - 只在大屏幕显示 */}
+        <div className="hidden md:block">
+          <div className="absolute" style={{ top: '-5%', right: '5%', fontSize: '1.5rem', opacity: 0.5 }}>✦</div>
+          <div className="absolute" style={{ top: '5%', right: '-15%' }}>
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z" fill="currentColor" fillOpacity="0.7"/>
+              <ellipse cx="12" cy="12" rx="5" ry="5" fill="currentColor" fillOpacity="0.5" />
+            </svg>
+          </div>
+          <div className="absolute" style={{ bottom: '20%', right: '-10%', fontSize: '2rem', opacity: 0.5 }}>✧</div>
+          <div className="absolute" style={{ bottom: '-5%', right: '15%', fontSize: '1.8rem', opacity: 0.5 }}>✦</div>
+          <div className="absolute" style={{ bottom: '15%', right: '-20%' }}>
+            <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.7 2.7C18.9 3.8 23.3 9.5 22.2 15.8C21.1 22 15.4 26.4 9.2 25.3C3 24.2 -1.4 18.5 -0.3 12.3C0.8 6 6.5 1.6 12.7 2.7Z" fill="currentColor" fillOpacity="0.1" />
+              <path d="M5 18L19 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M19 18V4H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+        </div>
         
         </motion.section>
        <div className="w-full h-px bg-gray-300"></div>
        {/* HCI/AI Section */}
 
-      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(248,247,240)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
+      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(249,248,241)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
         <div 
           className="w-full h-full flex flex-col lg:flex-row" 
           style={{ 
@@ -866,15 +1036,19 @@ const HomeTailwind = () => {
 
             {/* Know More Button */}
             <div className="text-right" style={{ marginTop: 'clamp(1.5rem, 4vw, 4rem)' }}>
-              <button 
-                className="bg-gray-800 hover:bg-gray-900 text-white rounded-lg font-semibold transition-colors"
-                style={{ 
-                  fontSize: 'clamp(0.9rem, 1.2vw, 1.3rem)',
-                  padding: 'clamp(0.6rem, 1vw, 1.25rem) clamp(1.5rem, 3vw, 3.5rem)'
+              <motion.button 
+                className="bg-white text-gray-800 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg border border-gray-300"
+                whileHover={{ 
+                  scale: 1.05,
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ 
+                  scale: 0.95,
+                  transition: { duration: 0.1 }
                 }}
               >
-                Know More Button
-              </button>
+                Learn More
+              </motion.button>
             </div>
             
             
@@ -891,25 +1065,40 @@ const HomeTailwind = () => {
             ></div> 
 
       {/* VFX & Game Section */}
-      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(248,247,240)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
+      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(249,248,241)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
         
         {/* 标题 */}
-        <div className="text-left mb-12" style={{ paddingLeft: '2rem' }}>
-          <h2 
-            className="font-bold text-gray-800 mb-4" 
-            style={{ 
-              fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
-              fontStyle: 'italic',
-              letterSpacing: '0.5px',
-              lineHeight: '1.1',
-              fontSize: 'clamp(1.25rem, 3.5vw, 4rem)'
+        <div className="flex justify-between items-center mb-12" style={{ paddingLeft: '2rem', paddingRight: '2rem' }}>
+          <div className="text-left">
+            <h2 
+              className="font-bold text-gray-800 mb-4" 
+              style={{ 
+                fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                fontStyle: 'italic',
+                letterSpacing: '0.5px',
+                lineHeight: '1.1',
+                fontSize: 'clamp(1.25rem, 3.5vw, 4rem)'
+              }}
+            >
+              I am a VFX & Game developer
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl">
+              Visual Effects and Game Development Projects
+            </p>
+          </div>
+          <motion.button 
+            className="bg-white text-gray-800 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg border border-gray-300"
+            whileHover={{ 
+              scale: 1.05,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ 
+              scale: 0.95,
+              transition: { duration: 0.1 }
             }}
           >
-            I am a VFX & Game developer
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl">
-            Visual Effects and Game Development Projects
-          </p>
+            Learn More
+          </motion.button>
         </div>
 
         {/* 不均匀网格布局 */}
@@ -1039,7 +1228,7 @@ const HomeTailwind = () => {
         <section className="relative w-full h-[100vh] overflow-hidden" style={{ paddingTop: '80px' }}>
 
         <Canvas
-            className="w-full h-full bg-[rgb(248,247,240)]"
+            className="w-full h-full bg-[rgb(249,248,241)]"
             camera={{ position: [0, 0, 25], fov: 75 }}  // 调整相机位置
             rotation={[Math.PI / 4, 0, 0]}  // 调整视角角度
             dpr={[1, 1.5]}  // 确认设备像素比是否过高

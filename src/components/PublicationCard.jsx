@@ -19,7 +19,15 @@ const PublicationCardComponent = React.forwardRef(({ title, authors, journal, ye
     style={{ color: '#111', fontFamily: 'Fira Mono, 思源黑体, Arial, sans-serif' }}
     {...props}
   >
-    <div className="font-bold text-lg mb-1">{title}</div>
+    <div 
+      className="font-bold text-lg mb-1"
+      style={{ 
+        fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+        fontStyle: 'italic'
+      }}
+    >
+      {title}
+    </div>
     <div className="text-sm mb-1" style={{ color: '#444' }}>{authors}</div>
     <div className="text-xs mb-2" style={{ color: '#666' }}>{conference || journal} · {year}</div>
     {description && <div className="text-sm mb-2">{description}</div>}
