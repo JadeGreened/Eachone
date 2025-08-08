@@ -1,14 +1,11 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
 import ResearchAreaCard from '../components/ResearchAreaCard';
 import PublicationCard from '../components/PublicationCard';
 import Header from '../components/Header';
 import GazeJitterSection from '../components/GazeJitterSection';
-import backgroundImg from '../assets/Home/Background.png';
-import { getR2VideoPath, R2_VIDEOS } from '../utils/r2Utils';
-import backgroundPoster from '../assets/Home/Background.png';
-import onSelectedPoster from '../assets/Home/Yichuan.png';
-import projectImage from '../assets/Home/CHILBW_Header.png';
+import { getR2VideoPath, getR2ImagePath, R2_VIDEOS, R2_IMAGES } from '../utils/r2Utils';
 import { Canvas } from '@react-three/fiber';
 import ScrollClouds from "../components/ScrollClouds"
 import { CameraControls } from "@react-three/drei"
@@ -75,7 +72,7 @@ const SideCharacterOverlay = ({ onClick }) => {
 };
 
 const HomeTailwind = () => {
-
+  const location = useLocation();
   const { scrollY } = useScroll();
   // 使用一个状态表示当前页面：'background' 或 'character'
   const [currentPage, setCurrentPage] = useState('character');
@@ -159,6 +156,23 @@ const HomeTailwind = () => {
     }
   }, [onSelectedFinished]);
 
+  // 处理锚点滚动
+  useEffect(() => {
+    const hash = location.hash;
+    if (hash) {
+      // 延迟一下让页面完全加载
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 300); // 增加延迟时间确保页面完全加载
+    }
+  }, [location]);
+
 
 
 
@@ -192,7 +206,7 @@ const HomeTailwind = () => {
       {/* Hero Section */}
       
       <motion.section
-          id="hero"
+          id="about"
           className="relative w-full h-screen flex flex-col items-center justify-center text-center overflow-hidden"
           style={{ y: heroY, opacity: heroOpacity, paddingTop: '80px' }} 
         >
@@ -213,7 +227,7 @@ const HomeTailwind = () => {
           />
           {/* onSelected 视频 - 只在大屏幕显示 */}
           <motion.img
-            src={getR2VideoPath("Yichuan.png")}
+            src={R2_IMAGES.yichuanPoster}
             className="absolute left-0 object-cover hidden md:block"
             style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
             variants={posterVariants}
@@ -239,7 +253,7 @@ const HomeTailwind = () => {
           />
           {/* StandStill 视频 - 只在大屏幕显示 */}
           <motion.img
-            src={onSelectedPoster}
+            src={R2_IMAGES.yichuanPoster}
             alt=""
             className="absolute left-0 object-cover hidden md:block"
             style={{ top: '8%', height: '92%', width: '30%', objectPosition: 'center 5%', zIndex: 1 }}
@@ -348,9 +362,8 @@ const HomeTailwind = () => {
                 <p>
                   Currently, I work as a Research Assistant at the X-CHI Lab under the guidance of Professor Hai-Ning Liang at HKUST-GZ.
                 </p>
-                <p>
-                  My research interests lie in Human-Computer Interaction, Text Entry and VR development. My current work is focused on modeling user behavior patterns in virtual environment.
-                </p>
+                
+
               </motion.div>
 
                              {/* 机构图标 - 大屏幕版本 */}
@@ -493,9 +506,7 @@ const HomeTailwind = () => {
                 <p>
                   Currently, I work as a Research Assistant at the X-CHI Lab under the guidance of Professor Hai-Ning Liang at HKUST-GZ.
                 </p>
-                <p>
-                  My research interests lie in Human-Computer Interaction, Text Entry and VR development. My current work is focused on modeling user behavior patterns in virtual environment.
-                </p>
+              
               </motion.div>
 
               {/* 机构图标 - 小屏幕版本 */}
@@ -557,7 +568,7 @@ const HomeTailwind = () => {
        <div className="w-full h-px bg-gray-300"></div>
        {/* HCI/AI Section */}
 
-      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(249,248,241)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
+      <section id="research" className="relative w-full min-h-screen overflow-auto bg-[rgb(249,248,241)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
         <div 
           className="w-full h-full flex flex-col lg:flex-row" 
           style={{ 
@@ -688,7 +699,7 @@ const HomeTailwind = () => {
                   }}
                 >
                   <img 
-                    src={projectImage}
+                    src={R2_IMAGES.projectImage}
                     alt="Project Figure"
                     className="w-full h-full object-contain"
                   />
@@ -738,7 +749,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Search
+                      Page
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -747,7 +758,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Collab
+                      DOI
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -756,7 +767,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Eupido
+                      PDF
                     </button>
                   </div>
                 </div>
@@ -779,7 +790,7 @@ const HomeTailwind = () => {
                   }}
                 >
                   <img 
-                    src={projectImage}
+                    src={R2_IMAGES.projectImage}
                     alt="Project Figure"
                     className="w-full h-full object-contain"
                   />
@@ -829,7 +840,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Search
+                      Page
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -838,7 +849,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Collab
+                      DOI
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -847,7 +858,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Eupido
+                      PDF
                     </button>
                   </div>
                 </div>
@@ -870,7 +881,7 @@ const HomeTailwind = () => {
                   }}
                 >
                   <img 
-                    src={projectImage}
+                    src={R2_IMAGES.projectImage}
                     alt="Project Figure"
                     className="w-full h-full object-contain"
                   />
@@ -920,7 +931,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Search
+                      Page
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -929,7 +940,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Collab
+                      DOI
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -938,7 +949,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Eupido
+                      PDF
                     </button>
                   </div>
                 </div>
@@ -961,7 +972,7 @@ const HomeTailwind = () => {
                   }}
                 >
                   <img 
-                    src={projectImage}
+                    src={R2_IMAGES.projectImage}
                     alt="Project Figure"
                     className="w-full h-full object-contain"
                   />
@@ -1011,7 +1022,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Search
+                      Page
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -1020,7 +1031,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Collab
+                      DOI
                     </button>
                     <button 
                       className="px-3 py-1 text-gray-800 rounded"
@@ -1029,7 +1040,7 @@ const HomeTailwind = () => {
                         backgroundColor: 'rgb(250, 247, 239)'
                       }}
                     >
-                      Eupido
+                      PDF
                     </button>
                   </div>
                 </div>
@@ -1038,19 +1049,21 @@ const HomeTailwind = () => {
 
             {/* Know More Button */}
             <div className="text-right" style={{ marginTop: 'clamp(1.5rem, 4vw, 4rem)' }}>
-              <motion.button 
-                className="bg-white text-gray-800 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg border border-gray-300"
-                whileHover={{ 
-                  scale: 1.05,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ 
-                  scale: 0.95,
-                  transition: { duration: 0.1 }
-                }}
-              >
-                Learn More
-              </motion.button>
+              <Link to="/works?filter=academic">
+                <motion.button 
+                  className="bg-white text-gray-800 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg border border-gray-300"
+                  whileHover={{ 
+                    scale: 1.05,
+                    transition: { duration: 0.2 }
+                  }}
+                  whileTap={{ 
+                    scale: 0.95,
+                    transition: { duration: 0.1 }
+                  }}
+                >
+                  Learn More
+                </motion.button>
+              </Link>
             </div>
             
             
@@ -1067,7 +1080,7 @@ const HomeTailwind = () => {
             ></div> 
 
       {/* VFX & Game Section */}
-      <section className="relative w-full min-h-screen overflow-auto bg-[rgb(249,248,241)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
+      <section id="games" className="relative w-full min-h-screen overflow-auto bg-[rgb(249,248,241)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>
         
         {/* 标题 */}
         <div className="flex justify-between items-center mb-12" style={{ paddingLeft: '2rem', paddingRight: '2rem' }}>
@@ -1088,19 +1101,21 @@ const HomeTailwind = () => {
               Visual Effects and Game Development Projects
             </p>
           </div>
-          <motion.button 
-            className="bg-white text-gray-800 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg border border-gray-300"
-            whileHover={{ 
-              scale: 1.05,
-              transition: { duration: 0.2 }
-            }}
-            whileTap={{ 
-              scale: 0.95,
-              transition: { duration: 0.1 }
-            }}
-          >
-            Learn More
-          </motion.button>
+          <Link to="/works?filter=game-vfx">
+            <motion.button 
+              className="bg-white text-gray-800 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 shadow-lg border border-gray-300"
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.2 }
+              }}
+              whileTap={{ 
+                scale: 0.95,
+                transition: { duration: 0.1 }
+              }}
+            >
+              Learn More
+            </motion.button>
+          </Link>
         </div>
 
         {/* 不均匀网格布局 */}
@@ -1227,7 +1242,7 @@ const HomeTailwind = () => {
       </section>
 
         {/* ——— 云层横幅，用 vh 替代 px ——— */}
-        <section className="relative w-full h-[100vh] overflow-hidden" style={{ paddingTop: '80px' }}>
+        <section id="uiux" className="relative w-full h-[100vh] overflow-hidden" style={{ paddingTop: '80px' }}>
 
         <Canvas
             className="w-full h-full bg-[rgb(249,248,241)]"
@@ -1305,27 +1320,29 @@ const HomeTailwind = () => {
           </motion.h1>
           
           {/* 按钮 */}
-          <motion.button 
-            className="bg-black text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-colors duration-300 shadow-lg floating-button"
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ 
-              duration: 0.8, 
-              ease: "easeOut",
-              delay: 1.2
-            }}
-            whileHover={{ 
-              scale: 1.05,
-              transition: { duration: 0.2 }
-            }}
-            whileTap={{ 
-              scale: 0.95,
-              transition: { duration: 0.1 }
-            }}
-          >
-            Learn More
-          </motion.button>
+          <Link to="/works?filter=ui-web">
+            <motion.button 
+              className="bg-black text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-800 transition-colors duration-300 shadow-lg floating-button"
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ 
+                duration: 0.8, 
+                ease: "easeOut",
+                delay: 1.2
+              }}
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.2 }
+              }}
+              whileTap={{ 
+                scale: 0.95,
+                transition: { duration: 0.1 }
+              }}
+            >
+              Learn More
+            </motion.button>
+          </Link>
         </motion.div>
       </section>
   

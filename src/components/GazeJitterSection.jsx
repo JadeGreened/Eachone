@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import researchAreaImg from '../assets/Home/ResearchArea.png';
+import { R2_IMAGES } from '../utils/r2Utils';
 
 const HCISection = () => {
   // Canvas和动画相关的ref
@@ -352,7 +352,7 @@ const HCISection = () => {
   // 预加载图片
   useEffect(() => {
     const img = new Image();
-    img.src = researchAreaImg;
+    img.src = R2_IMAGES.researchAreaImg;
     img.onload = () => {
       setImgElement(img);
     };

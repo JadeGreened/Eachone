@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = ({ customMessage, showNavItems = true }) => {
+  const location = useLocation();
 
   // useEffect(() => {
   //   return scrollY.onChange((latest) => {
@@ -20,11 +22,12 @@ const Header = ({ customMessage, showNavItems = true }) => {
   };
 
   const navItems = [
-    { name: 'About', href: '#about' },
-    { name: 'Research', href: '#research' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Publications', href: '#publications' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: '/#about' },
+    { name: 'Research', href: '/#research' },
+    { name: 'Games', href: '/#games' },
+    { name: 'UI/UX', href: '/#uiux' },
+    { name: 'Works', href: '/works' },
+    { name: 'About', href: '/about' },
   ];
 
   return (
@@ -101,19 +104,43 @@ const Header = ({ customMessage, showNavItems = true }) => {
               </div>
             ) : showNavItems ? (
               <div className="hidden md:flex items-center space-x-8">
-                {navItems.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="text-black hover:text-gray-600 transition-colors duration-200 text-sm font-medium"
-                    style={{ 
-                      fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
-                      fontStyle: 'italic'
-                    }}
-                  >
-                    {item.name}
-                  </a>
-                ))}
+                {navItems.map((item) => {
+                  // 判断是内部路由链接还是锚点链接
+                  const isRouteLink = item.href.startsWith('/') && !item.href.includes('#');
+                  const isActive = location.pathname === item.href;
+                  
+                  if (isRouteLink) {
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={`hover:text-gray-600 transition-colors duration-200 text-base md:text-lg font-medium ${
+                          isActive ? 'text-gray-800 font-semibold' : 'text-black'
+                        }`}
+                        style={{ 
+                          fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                          fontStyle: 'italic'
+                        }}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  } else {
+                    return (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className="text-black hover:text-gray-600 transition-colors duration-200 text-base md:text-lg font-medium"
+                        style={{ 
+                          fontFamily: 'Palatino, "Palatino Linotype", "Book Antiqua", serif',
+                          fontStyle: 'italic'
+                        }}
+                      >
+                        {item.name}
+                      </a>
+                    );
+                  }
+                })}
               </div>
             ) : null}
           </div>
