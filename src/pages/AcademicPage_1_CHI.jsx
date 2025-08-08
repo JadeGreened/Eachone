@@ -15,12 +15,12 @@ const AcademicPage_1_TVCG = () => {
             lineHeight: '1.2',
             marginBottom: '20px'
           }}>
-            Intelligent Medical Orthopedic Splint
+            Exploring and Modeling Gaze-Based Steering Behavior in Virtual Reality
           </h1>
           
           {/* 作者列表 */}
           <div style={{ fontSize: '16px', color: '#666', lineHeight: '1.5' }}>
-            <span style={{ color: '#4A90E2' }}>Yichuan Zhang</span>, Siyuan Wang, Chao Li, Shuchen Liu, Zheng Jin
+            Xuning Hu, <span style={{ color: '#4A90E2', fontWeight: 'bold' }}>Yichuan Zhang</span>, Yushi Wei, Liangyuting Zhang, Yue Li, Wolfgang Stuerzlinger, Hai-Ning Liang*
           </div>
         </div>
 
@@ -44,25 +44,28 @@ const AcademicPage_1_TVCG = () => {
             textAlign: 'justify'
           }}>
             <p style={{ marginBottom: '20px' }}>
-              The intelligent medical orthopedic splint is a significant advancement in fracture recovery, addressing 
-              key issues of traditional splints such as inconsistent tightness and limited wound monitoring. The 
-              research at Suzhou Traditional Chinese Medicine Hospital involved interviews with doctors and 
-              surveys with patients, highlighting these challenges.
+            Gaze-based interaction is a common input method in virtual reality
+            (VR). Eye movements, such as fixations and saccades, result in different
+            behaviors compared to other input methods. Previous studies
+            on selection tasks showed that, unlike the mouse, the human gaze is
+            insensitive to target distance and does not fully utilize target width
+            due to the characteristics of saccades and micro-saccades of the
+            eyes. However, its application in steering tasks remains unexplored.
+            Since steering tasks are widely used in VR for menu adjustments
+            and object manipulation, this study examines whether the findings
+            from selection tasks apply to steering tasks. We also model and
+            compare the Steering Law based on eye movement characteristics.
+            To do this, we use data on movement time, average speed,
+            and re-entry count. Our analysis investigates the impact of path
+            width and length on performance. This work proposes three candidate
+            models that incorporate gaze characteristics, which achieve
+             a superior fit (R² &gt; 0.964) compared to the original Steering Law,
+            improving the accuracy of time prediction, AIC, and BIC by 7%,
+            26%, and 10%, respectively. These models offer valuable insights for
+            game and interface designers who implement gaze-based controls
+            in VR environments.
             </p>
-            
-            <p style={{ marginBottom: '20px' }}>
-              This innovative splint integrates technology to continuously monitor tightness, ensuring it remains 
-              within a therapeutic range. It features sensors for real-time wound monitoring, providing critical data 
-              on temperature and humidity. Designed to be lightweight and cost-effective, the splint uses 
-              affordable materials without sacrificing quality.
-            </p>
-            
-            <p style={{ marginBottom: '0' }}>
-              Performance tests showed that the splint accurately maintains appropriate pressure and offers an 
-              easy-to-use interface. Future improvements include optimizing sensor placement, enhancing data 
-              integration, and further reducing weight and cost. Overall, the intelligent medical orthopedic splint 
-              aims to improve patient outcomes, comfort, and healthcare efficiency.
-            </p>
+          
           </div>
         </div>
 

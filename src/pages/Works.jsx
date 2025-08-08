@@ -21,15 +21,15 @@ const Works = () => {
     {
       id: 1,
       type: 'academic',
-      title: "Exploring and Modeling the Effects of Eye-Tracking Accuracy and Precision on Gaze-Based Steering in Virtual Environments",
-      authors: "Yichuan Zhang, Hai-Ning Liang, et al.",
-      conference: "CHI 2024",
-      year: "2024",
-      doi: "10.1145/3613904.3642000",
+      title: "Exploring and Modeling Gaze-Based Steering Behavior in Virtual Reality",
+      authors: "Xuning Hu, Yichuan Zhang, Yushi Wei, Liangyuting Zhang, Yue Li, Wolfgang Stuerzlinger, Hai-Ning Liang",
+      conference: "CHI EA '25: Proceedings of the CHI Conference on Human Factors in Computing Systems",
+      year: "2025",
+      doi: "10.1145/3706599.3720273",
       description: "This study investigates how eye-tracking accuracy and precision affect user performance in gaze-based steering tasks within virtual reality environments.",
-      link: "https://doi.org/10.1145/3613904.3642000",
-      image: R2_IMAGES.chi2024,
-      tags: ["HCI", "VR", "Eye-tracking", "User Study"]
+      link: "/academic/AcademicPage_1_CHI",
+      image: R2_IMAGES.projectImage,
+      tags: ["HCI", "VR", "Eye-tracking", "User Study", "Gaze-based Interaction"]
     },
     {
       id: 2,
@@ -388,9 +388,14 @@ const AcademicCard = ({ work }) => (
               </a>
             )}
             {work.doi && (
-              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition-colors">
+              <a
+                href={`https://dl.acm.org/doi/full/${work.doi}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              >
                 DOI
-              </button>
+              </a>
             )}
           </div>
         </div>
@@ -471,9 +476,14 @@ const AcademicProjectCard = ({ work }) => {
             </a>
           )}
           {work.doi && (
-            <button className="px-4 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition-colors">
+            <a
+              href={`https://dl.acm.org/doi/full/${work.doi}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            >
               DOI
-            </button>
+            </a>
           )}
         </div>
       </div>
@@ -563,7 +573,7 @@ const ProjectCard = ({ work }) => {
               href={work.demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-gray-900 text-white text-center py-3 px-4 rounded-lg font-medium text-sm transition-colors"
+              className="flex-1 bg-gray-900 text-white text-center py-3 px-4 rounded-lg font-medium text-sm transition-colors hover:bg-gray-800"
             >
               View Demo
             </a>
@@ -573,7 +583,7 @@ const ProjectCard = ({ work }) => {
               href={work.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition-colors"
+              className="px-4 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
             >
               GitHub
             </a>

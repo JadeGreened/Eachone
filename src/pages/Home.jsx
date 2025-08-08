@@ -15,61 +15,7 @@ import '../styles/cloud-text.css';
 
 
 
-const CharacterOverlay = ({ setOpen }) => {
-  const [hovered, setHovered] = useState(false);  
 
-  return (
-    <>
-      {/* 可交互蒙层 */}
-      <motion.div
-        className="absolute cursor-pointer"
-        style={{
-          top: '65%',           // 已经是百分比
-          left: '45%',          // 已经是百分比
-          width: '25%',         // 已经是百分比
-          height: '60%',        // 已经是百分比
-          transform: 'translate(-50%, -50%)',
-          borderRadius: '8px',
-          zIndex: 3,
-          backgroundColor: '#000',
-        }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onClick={() => setOpen(true)}
-        initial={false}
-        animate={{ opacity: hovered ? 0.35 : 0 }}
-        transition={{ duration: 0.25 }}
-      />
-    </>
-  );
-};
-
-// 新增侧边人物蒙层组件
-const SideCharacterOverlay = ({ onClick }) => {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <motion.div
-      className="absolute cursor-pointer"
-      style={{
-        top: '65%',           // 已经是百分比
-        left: '15%',          // 已经是百分比
-        width: '20%',         // 已经是百分比
-        height: '60%',        // 已经是百分比
-        transform: 'translate(-50%, -50%)',
-        borderRadius: '8px',
-        zIndex: 3,
-        backgroundColor: '#000',
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: hovered ? 0.35 : 0 }}
-      transition={{ duration: 0.25 }}
-    />
-  );
-};
 
 const HomeTailwind = () => {
   const location = useLocation();
@@ -181,10 +127,7 @@ const HomeTailwind = () => {
     setCurrentProject(index);
   }, []);
 
-  // 处理侧边人物点击事件
-  const handleSideCharacterClick = () => {
-    switchToBackgroundPage();
-  };
+
 
   return (
     <div
@@ -211,20 +154,7 @@ const HomeTailwind = () => {
           style={{ y: heroY, opacity: heroOpacity, paddingTop: '80px' }} 
         >
 
-          {/* 视频背景 - 只在大屏幕显示 */}
-          <motion.video
-            src={R2_VIDEOS.backgroundLoop}
-            autoPlay
-            loop
-            muted
-            playsInline
-            onCanPlayThrough={handleVideoReady}
-            initial={{ opacity: currentPage === 'background' ? 1 : 0 }} 
-            animate={{ opacity: currentPage === 'background' ? 1 : 0 }}
-            className="absolute left-0 right-0 bottom-0 w-full object-cover hidden md:block"
-            style={{ top: '8%', height: '92%', zIndex: 1 }}
-            transition={{ duration: 0.5 }}
-          />
+
           {/* onSelected 视频 - 只在大屏幕显示 */}
           <motion.img
             src={R2_IMAGES.yichuanPoster}
@@ -290,17 +220,6 @@ const HomeTailwind = () => {
               backgroundColor: 'rgba(249, 248, 241, 0.7)',
             }}
           />
-          {/* 可交互人物蒙层 */}
-          <div className="absolute top-0 left-0 right-0 bottom-0">
-            {currentPage === 'character' && (
-              <SideCharacterOverlay onClick={handleSideCharacterClick} />
-            )}
-            {currentPage === 'background' && (
-              <CharacterOverlay setOpen={switchToCharacterPage} />
-            )}
-          </div>
-        
-      
         
         {/* 文字内容 */}
         
@@ -713,10 +632,10 @@ const HomeTailwind = () => {
                     }}
                   >
                     <span className="block sm:hidden">
-                      Eye-Tracking Effects in VR...
+                      Gaze-Based Steering Behavior...
                     </span>
                     <span className="hidden sm:block">
-                      Exploring and Modeling the Effects of Eye-Tracking Accuracy and Precision on Gaze-Based Steering in Virtual Environments
+                      Exploring and Modeling Gaze-Based Steering Behavior in Virtual Reality
                     </span>
                   </h4>
                   <p 
@@ -724,10 +643,10 @@ const HomeTailwind = () => {
                     style={{ fontSize: 'clamp(0.7rem, 0.8vw, 0.9rem)' }}
                   >
                     <span className="block sm:hidden">
-                      X. Hu, Y. Zhang, et al.
+                      X. Hu, <span className="font-bold">Y. Zhang</span>, et al.
                     </span>
                     <span className="hidden sm:block">
-                      Xuning Hu, Yichuan Zhang, Yushi Wei, Liangyuting Zhang, Yue Li, Wolfgang Stuerzlinger, Hai-Ning Liang.
+                      Xuning Hu, <span className="font-bold">Yichuan Zhang</span>, Yushi Wei, Liangyuting Zhang, Yue Li, Wolfgang Stuerzlinger, Hai-Ning Liang.
                     </span>
                   </p>
                   <p 
@@ -738,37 +657,44 @@ const HomeTailwind = () => {
                       TVCG (ISMAR 2025)
                     </span>
                     <span className="hidden sm:block">
-                      IEEE Conference on Virtual Reality and 3D User Interfaces (TVCG (ISMAR 2025))
+                      CHI EA '25: Proceedings of the CHI Conference on Human Factors in Computing Systems
                     </span>
                   </p>
                   <div className="flex gap-2">
-                    <button 
-                      className="px-3 py-1 text-gray-800 rounded"
-                      style={{ 
-                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
-                        backgroundColor: 'rgb(250, 247, 239)'
-                      }}
-                    >
-                      Page
-                    </button>
-                    <button 
-                      className="px-3 py-1 text-gray-800 rounded"
-                      style={{ 
-                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
-                        backgroundColor: 'rgb(250, 247, 239)'
-                      }}
-                    >
-                      DOI
-                    </button>
-                    <button 
-                      className="px-3 py-1 text-gray-800 rounded"
-                      style={{ 
-                        fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
-                        backgroundColor: 'rgb(250, 247, 239)'
-                      }}
-                    >
-                      PDF
-                    </button>
+                    <a href="/academic/AcademicPage_1_CHI" target="_blank" rel="noopener noreferrer">
+                      <button 
+                        className="px-3 py-1 text-gray-800 rounded hover:bg-gray-200 transition-colors duration-200"
+                        style={{ 
+                          fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                          backgroundColor: 'rgb(250, 247, 239)'
+                        }}
+                      >
+                        Page
+                      </button>
+                    </a>
+                    <a href="https://dl.acm.org/doi/full/10.1145/3706599.3720273" target="_blank" rel="noopener noreferrer">
+                      <button 
+                        className="px-3 py-1 text-gray-800 rounded hover:bg-gray-200 transition-colors duration-200"
+                        style={{ 
+                          fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                          backgroundColor: 'rgb(250, 247, 239)'
+                        }}
+                      >
+                        DOI
+                      </button>
+                    </a>
+                    <a href={process.env.PUBLIC_URL + "CHI25.pdf"} target="_blank" rel="noopener noreferrer" download>
+                    {/* <a href="你的云存储PDF链接" target="_blank" rel="noopener noreferrer" download> */}
+                      <button 
+                        className="px-3 py-1 text-gray-800 rounded hover:bg-gray-200 transition-colors duration-200"
+                        style={{ 
+                          fontSize: 'clamp(0.7rem, 0.75vw, 0.85rem)',
+                          backgroundColor: 'rgb(250, 247, 239)'
+                        }}
+                      >
+                        PDF
+                      </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -1070,14 +996,7 @@ const HomeTailwind = () => {
           </div>
         </div>
       </section>
-            {/* 黑色分割线 */}
-            <div 
-              className="w-full bg-black"
-              style={{ 
-                height: '1px',
-                marginTop: 'clamp(2rem, 5vw, 5rem)'
-              }}
-            ></div> 
+      <div className="w-full h-px bg-gray-300"></div>
 
       {/* VFX & Game Section */}
       <section id="games" className="relative w-full min-h-screen overflow-auto bg-[rgb(249,248,241)]" style={{ padding: 'clamp(4rem, 6vh, 8rem) clamp(0.75rem, 6vw, 8rem)' }}>

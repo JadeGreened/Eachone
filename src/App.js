@@ -4,7 +4,7 @@ import './App.css';
 import Home from './pages/Home';
 import Works from './pages/Works';
 import About from './pages/About';
-import AcademicPage_1_TVCG from './pages/AcademicPage_1_TVCG';
+import AcademicPage_1_CHI from './pages/AcademicPage_1_CHI';
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/works" element={<Works />} />
           <Route path="/about" element={<About />} />
-          <Route path="/academic/AcademicPage_1_TVCG" element={<AcademicPage_1_TVCG />} />
+          <Route path="/academic/AcademicPage_1_CHI" element={<AcademicPage_1_CHI />} />
         </Routes>
       </Router>
     </div>
